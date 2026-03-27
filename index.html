@@ -3,868 +3,541 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acredita que eu...</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Beleza em Jogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --orange:   #FF6600;
-  --orange-d: #cc5200;
-  --orange-l: #ff8533;
-  --orange-xl:#fff0e6;
-  --dark:     #1C1C1C;
-  --mid:      #4a4a4a;
-  --muted:    #888;
-  --line:     rgba(0,0,0,0.08);
-  --white:    #ffffff;
-  --cream:    #E1D8C8;
-  --green-ok: #1a7a3a;
-  --red-err:  #cc2200;
-  --surface:  #fff;
-  --bg:       #FF6600;
-  --r:        10px;
-  --shadow:   0 2px 12px rgba(0,0,0,0.10);
-  --shadow-lg:0 8px 32px rgba(0,0,0,0.16);
+:root{
+  --orange:#FF6600; --orange-d:#cc5200; --orange-xl:#fff0e6;
+  --dark:#1C1C1C; --muted:#888; --line:rgba(0,0,0,.08);
+  --green-ok:#1a7a3a; --red-err:#cc2200;
+  --bg:#FF6600; --r:10px;
+  --shadow:0 2px 12px rgba(0,0,0,.10);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.18);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Inter',sans-serif;
-  background:var(--bg);
-  color:var(--dark);
-  min-height:100vh;
-}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
 
 /* ── SCREENS ── */
-.screen{display:none;min-height:100vh;}
-.screen.active{display:flex;flex-direction:column;align-items:center;}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;}
+.screen.active{display:flex;}
+#setupScreen{padding:36px 16px;}
+#gameScreen{padding:0;align-items:stretch;min-height:100vh;}
+#victoryScreen{background:var(--orange);justify-content:center;align-items:center;gap:14px;padding:40px 16px;text-align:center;}
 
-/* ══════════════════════════════════════════════
-   SETUP SCREEN
-══════════════════════════════════════════════ */
-#setupScreen{padding:40px 16px;}
-.brand{
-  display:flex;align-items:baseline;gap:10px;
-  margin-bottom:4px;
-}
-.brand-logo{
-  font-size:clamp(2rem,5vw,3rem);
-  font-weight:800;
-  color:#fff;
-  letter-spacing:-1px;
-  line-height:1;
-}
+/* ── BRAND ── */
+.brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.brand-logo{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;color:#fff;letter-spacing:-1px;line-height:1;}
 .brand-logo span{color:var(--dark);}
-.brand-sub{
-  font-size:.85rem;font-weight:500;
-  color:rgba(255,255,255,.7);
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
-.setup-tagline{
-  font-size:.9rem;color:rgba(255,255,255,.7);
-  margin-bottom:36px;font-weight:400;
-}
+.brand-sub{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.5px;text-transform:uppercase;}
+.setup-tagline{font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:28px;}
 
-.card{
-  background:var(--white);
-  border-radius:var(--r);
-  padding:28px;width:100%;max-width:660px;
-  box-shadow:var(--shadow-lg);
-  margin-bottom:20px;
-}
-.card-title{
-  font-size:1rem;font-weight:700;
-  color:var(--dark);
-  margin-bottom:18px;
-  text-transform:uppercase;
-  letter-spacing:.8px;
-  display:flex;align-items:center;gap:8px;
-}
+/* ── CARD ── */
+.card{background:#fff;border-radius:var(--r);padding:24px;width:100%;max-width:700px;box-shadow:var(--shadow-lg);margin-bottom:16px;}
+.card-title{font-size:.85rem;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:8px;}
 .card-title span{color:var(--orange);}
-
-label{
-  font-size:.72rem;font-weight:700;
-  color:var(--muted);
-  text-transform:uppercase;letter-spacing:.8px;
-  display:block;margin-bottom:5px;
-}
-input[type=text],textarea,select{
-  width:100%;
-  background:#f7f7f7;
-  border:1.5px solid #e0e0e0;
-  border-radius:7px;
-  padding:9px 13px;
-  color:var(--dark);
-  font-family:'Inter',sans-serif;
-  font-size:.9rem;font-weight:500;
-  outline:none;
-  transition:border-color .15s;
-  margin-bottom:14px;
-}
+label{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px;}
+input[type=text],textarea,select{width:100%;background:#f7f7f7;border:1.5px solid #e0e0e0;border-radius:7px;padding:8px 12px;color:var(--dark);font-family:'Inter',sans-serif;font-size:.88rem;font-weight:500;outline:none;transition:border-color .15s;margin-bottom:12px;}
 input:focus,textarea:focus,select:focus{border-color:var(--orange);}
-textarea{resize:vertical;min-height:64px;}
+textarea{resize:vertical;min-height:60px;}
 
-/* Buttons */
-.btn{
-  background:var(--orange);color:#fff;
-  font-family:'Inter',sans-serif;
-  font-size:.85rem;font-weight:700;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-  border:none;border-radius:7px;
-  padding:11px 22px;cursor:pointer;
-  transition:background .15s,transform .1s;
-}
+/* ── BUTTONS ── */
+.btn{background:var(--orange);color:#fff;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border:none;border-radius:7px;padding:10px 20px;cursor:pointer;transition:background .15s,transform .1s;}
 .btn:hover{background:var(--orange-d);}
 .btn:active{transform:scale(.98);}
-.btn.lg{font-size:.95rem;padding:14px 32px;border-radius:8px;width:100%;max-width:660px;}
 .btn.ghost{background:transparent;color:var(--orange);border:1.5px solid var(--orange);}
 .btn.ghost:hover{background:var(--orange-xl);}
+.btn.green{background:#1a6b4a;box-shadow:0 4px 14px rgba(26,107,74,.3);}
 .btn.white{background:#fff;color:var(--orange);}
-.btn.white:hover{background:#f5f5f5;}
-.btn.danger{background:#e05050;}
-.btn.sm{font-size:.75rem;padding:7px 14px;}
 .btn.confirm{background:var(--green-ok);}
+.btn.sm{font-size:.75rem;padding:7px 14px;}
+.btn.lg{width:100%;max-width:700px;font-size:.9rem;padding:13px;}
 
-/* Teams */
-.teams-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.team-chip{
-  display:flex;align-items:center;gap:8px;
-  background:var(--orange-xl);
-  border:1.5px solid rgba(255,102,0,.2);
-  border-radius:50px;
-  padding:5px 12px;font-size:.82rem;font-weight:600;
-}
-.chip-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+/* ── TEAMS SETUP ── */
+.teams-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.team-chip{display:flex;align-items:center;gap:7px;background:#f7f7f7;border:1.5px solid #e0e0e0;border-radius:50px;padding:5px 12px;font-size:.8rem;font-weight:600;cursor:pointer;transition:border-color .15s;}
+.team-chip:hover{border-color:var(--orange);}
+.chip-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
 .chip-rm{cursor:pointer;color:var(--muted);font-size:1rem;line-height:1;margin-left:2px;}
 .chip-rm:hover{color:var(--red-err);}
 
-/* Question blocks */
-.q-block{
-  background:#f9f9f9;border-radius:8px;
-  padding:16px;margin-bottom:14px;
-  border-left:3px solid var(--orange);
-}
-.q-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.q-block-num{font-size:.8rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;}
-.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 0;}
-.opt-row{display:flex;align-items:center;gap:7px;}
-.opt-letter{font-size:.75rem;font-weight:800;color:var(--orange);width:16px;flex-shrink:0;}
+/* ── QUESTION BLOCKS ── */
+.q-block{background:#f9f9f9;border-radius:8px;padding:14px;margin-bottom:12px;border-left:3px solid var(--orange);}
+.q-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.q-block-num{font-size:.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0 0;}
+.opt-row{display:flex;align-items:center;gap:6px;}
+.opt-letter{font-size:.72rem;font-weight:800;color:var(--orange);width:14px;flex-shrink:0;}
 .opt-row input{margin-bottom:0;}
-.correct-row{margin-top:10px;}
-.correct-row select{margin-bottom:0;}
 
-#qCount{font-size:.75rem;color:var(--muted);margin-top:10px;}
-#startError{font-size:.82rem;color:#fff;background:rgba(0,0,0,.2);padding:8px 14px;border-radius:6px;margin-top:8px;display:none;}
+/* ── LANG TOGGLE ── */
+.lang-toggle{display:flex;gap:0;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.15);flex-shrink:0;}
+.lang-btn{background:rgba(255,255,255,.22);color:#fff;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;border:none;padding:5px 11px;cursor:pointer;transition:background .15s;}
+.lang-btn.active{background:#fff;color:var(--orange);}
+.lang-btn:hover:not(.active){background:rgba(255,255,255,.38);}
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════
    GAME SCREEN
-══════════════════════════════════════════════ */
-#gameScreen{
-  background:#f4f4f4;
-  flex-direction:column;
-  align-items:stretch;
-  padding:0;
-}
+══════════════════════════════════ */
 
-/* Top bar */
+/* TOP BAR */
 .topbar{
   background:var(--orange);
-  padding:12px 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:10px;
-}
-.topbar-logo{
-  font-size:1.3rem;font-weight:800;color:#fff;
-  letter-spacing:-0.5px;
-}
-.topbar-logo span{color:var(--dark);}
-.scorebar{
-  display:flex;flex-wrap:wrap;gap:6px;
-}
-.score-chip{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.15);
-  border-radius:50px;
-  padding:4px 12px;
-  font-size:.78rem;font-weight:700;color:#fff;
-  border:1.5px solid rgba(255,255,255,.2);
-}
-.score-chip.active{background:rgba(255,255,255,.3);border-color:#fff;}
-.score-chip .sc-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);}
-
-/* Game layout */
-.game-body{
-  display:grid;
-  grid-template-columns:1fr 240px;
-  gap:16px;
-  padding:16px;
-  flex:1;
-  max-width:1200px;
-  width:100%;
-  margin:0 auto;
-}
-
-/* Board */
-.board-wrap{
-  background:#fff;
-  border-radius:var(--r);
-  padding:16px;
-  box-shadow:var(--shadow);
-}
-.board-grid{display:grid;gap:6px;}
-
-/* Cells */
-.cell{
-  border-radius:8px;
-  aspect-ratio:1;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  cursor:pointer;
-  position:relative;
-  transition:transform .12s,box-shadow .12s;
-  overflow:visible;
-  min-width:0;
-}
-.cell:hover{transform:scale(1.04);z-index:2;}
-.cell.start{background:var(--dark);color:#fff;}
-.cell.finish{background:var(--orange);color:#fff;}
-.cell.locked{background:#fff;border:1.5px solid #e0e0e0;cursor:default;}
-.cell.locked:hover{transform:none;}
-.cell.open{background:#fff;border:2px solid var(--orange);}
-.cell.solved{color:#fff;}  /* background set inline to team color */
-
-.cell-num{
-  font-size:clamp(.75rem,1.8vw,1.2rem);
-  font-weight:800;
-  line-height:1;
-  color:inherit;
-  opacity:.85;
-}
-.cell-icon{font-size:clamp(.9rem,2vw,1.3rem);line-height:1;}
-.cell.locked .cell-num{color:#bbb;}
-
-/* ── PAWNS — big, floating circles above cell ── */
-.cell-pawns{
-  position:absolute;
-  top:-10px; left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:3px;
-  z-index:10;
-  pointer-events:none;
-}
-.pawn{
-  width:clamp(18px,3vw,26px);
-  height:clamp(18px,3vw,26px);
-  border-radius:50%;
-  border:3px solid #fff;
-  box-shadow:0 2px 8px rgba(0,0,0,.35);
-  flex-shrink:0;
-  transition:transform .2s;
-}
-.pawn.active-pawn{
-  outline:3px solid var(--dark);
-  outline-offset:1px;
-}
-
-/* Side panel */
-.side-panel{display:flex;flex-direction:column;gap:12px;}
-
-.panel-card{
-  background:#fff;
-  border-radius:var(--r);
-  padding:16px;
-  box-shadow:var(--shadow);
-}
-.panel-title{
-  font-size:.7rem;font-weight:700;
-  color:var(--muted);
-  text-transform:uppercase;letter-spacing:.8px;
-  margin-bottom:12px;
-  padding-bottom:8px;
-  border-bottom:1px solid var(--line);
-}
-
-/* Dice */
-.dice-who{
-  font-size:.78rem;color:var(--muted);font-weight:500;
-  margin-bottom:2px;
-}
-.dice-name{
-  font-size:1rem;font-weight:800;
-  margin-bottom:14px;min-height:22px;
-}
-
-/* ── Realistic 3-D dice ── */
-.dice-scene{
-  width:72px;height:72px;
-  perspective:220px;
-  margin:0 auto 10px;
-  cursor:pointer;
-  user-select:none;
-}
-.dice-scene:hover .dice-cube{transform:rotateX(-15deg) rotateY(20deg) scale(1.06);}
-.dice-cube{
-  width:72px;height:72px;
-  position:relative;
-  transform-style:preserve-3d;
-  transform:rotateX(-20deg) rotateY(15deg);
-  transition:transform .15s ease;
-}
-.dice-cube.rolling{animation:diceRoll3d .55s ease;}
-@keyframes diceRoll3d{
-  0%  {transform:rotateX(0deg)   rotateY(0deg)   scale(1);}
-  20% {transform:rotateX(-90deg) rotateY(45deg)  scale(1.1);}
-  50% {transform:rotateX(180deg) rotateY(-60deg) scale(.95);}
-  80% {transform:rotateX(270deg) rotateY(30deg)  scale(1.05);}
-  100%{transform:rotateX(360deg) rotateY(0deg)   scale(1);}
-}
-.dice-face{
-  position:absolute;
-  width:72px;height:72px;
-  border-radius:10px;
-  display:grid;
-  padding:8px;
-  background:linear-gradient(145deg,#ffffff,#e8e8e8);
-  box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.12);
-}
-.dice-face.front {transform:translateZ(36px);}
-.dice-face.back  {transform:rotateY(180deg) translateZ(36px);}
-.dice-face.right {transform:rotateY(90deg)  translateZ(36px);}
-.dice-face.left  {transform:rotateY(-90deg) translateZ(36px);}
-.dice-face.top   {transform:rotateX(90deg)  translateZ(36px);}
-.dice-face.bottom{transform:rotateX(-90deg) translateZ(36px);}
-/* Depth shading */
-.dice-face.back  {background:linear-gradient(145deg,#d0d0d0,#bbb);}
-.dice-face.right {background:linear-gradient(145deg,#e0e0e0,#ccc);}
-.dice-face.left  {background:linear-gradient(145deg,#e8e8e8,#d5d5d5);}
-.dice-face.top   {background:linear-gradient(145deg,#f5f5f5,#e0e0e0);}
-.dice-face.bottom{background:linear-gradient(145deg,#c8c8c8,#b0b0b0);}
-
-.dot{
-  width:10px;height:10px;
-  border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#555,#111);
-  box-shadow:0 1px 3px rgba(0,0,0,.4);
-  align-self:center;justify-self:center;
-}
-/* Dot layouts — 1 */
-.face-1{grid-template-columns:1fr;grid-template-rows:1fr;}
-/* 2 */
-.face-2{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
-.face-2 .dot:nth-child(1){grid-column:1;grid-row:1;align-self:start;}
-.face-2 .dot:nth-child(2){grid-column:2;grid-row:2;align-self:end;}
-/* 3 */
-.face-3{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;}
-.face-3 .dot:nth-child(1){grid-column:1;grid-row:1;align-self:start;}
-.face-3 .dot:nth-child(2){grid-column:2;grid-row:2;}
-.face-3 .dot:nth-child(3){grid-column:3;grid-row:3;align-self:end;}
-/* 4 */
-.face-4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
-/* 5 */
-.face-5{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;}
-.face-5 .dot:nth-child(1){grid-column:1;grid-row:1;align-self:start;}
-.face-5 .dot:nth-child(2){grid-column:3;grid-row:1;align-self:start;}
-.face-5 .dot:nth-child(3){grid-column:2;grid-row:2;}
-.face-5 .dot:nth-child(4){grid-column:1;grid-row:3;align-self:end;}
-.face-5 .dot:nth-child(5){grid-column:3;grid-row:3;align-self:end;}
-/* 6 */
-.face-6{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;}
-
-.dice-result{
-  text-align:center;font-size:1rem;font-weight:800;
-  color:var(--orange);min-height:22px;margin-bottom:10px;
-}
-.btn-roll{width:100%;}
-
-/* Turn order */
-.turn-row{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 8px;border-radius:6px;
-  font-size:.8rem;font-weight:600;
-  margin-bottom:3px;
-  justify-content:space-between;
-}
-.turn-row.cur{background:var(--orange-xl);}
-.turn-row.done{opacity:.4;text-decoration:line-through;}
-.tr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-
-/* Discovered answers */
-.discovered-section{margin-top:4px;}
-.disc-subtitle{
-  font-size:.68rem;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.6px;
-  margin-bottom:8px;margin-top:12px;
-  padding-top:12px;
-  border-top:1px solid var(--line);
-}
-.disc-item{
-  display:flex;align-items:flex-start;gap:6px;
-  padding:5px 0;
-  border-bottom:1px solid #f0f0f0;
-  font-size:.76rem;
-}
-.disc-num{
-  background:var(--orange);color:#fff;
-  font-size:.62rem;font-weight:700;
-  border-radius:4px;padding:1px 5px;
-  flex-shrink:0;margin-top:1px;
-}
-.disc-team-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
-.disc-answer{font-weight:600;color:var(--dark);line-height:1.3;}
-.disc-empty{font-size:.75rem;color:#bbb;font-style:italic;}
-
-/* ══════════════════════════════════════════════
-   QUESTION MODAL
-══════════════════════════════════════════════ */
-.overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.55);
-  z-index:200;align-items:center;justify-content:center;
-  padding:16px;backdrop-filter:blur(4px);
-}
-.overlay.open{display:flex;}
-.modal{
-  background:#fff;
-  border-radius:12px;
-  padding:32px;
-  max-width:540px;width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,.25);
-  animation:pop .2s ease;
-}
-@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-badge{
-  display:inline-block;
-  background:var(--orange);color:#fff;
-  font-size:.72rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px;
-  padding:3px 10px;border-radius:4px;
-  margin-bottom:12px;
-}
-.modal-team{font-size:.9rem;font-weight:700;margin-bottom:4px;}
-.modal-q{
-  font-size:1.05rem;font-weight:700;
-  color:var(--dark);margin-bottom:20px;line-height:1.5;
-}
-.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.opt-btn{
-  background:#f7f7f7;
-  border:1.5px solid #e5e5e5;
-  border-radius:8px;
-  padding:10px 14px;
-  font-family:'Inter',sans-serif;
-  font-size:.9rem;font-weight:600;
-  color:var(--dark);
-  cursor:pointer;text-align:left;
-  display:flex;gap:10px;align-items:center;
-  transition:border-color .12s,background .12s;
-}
-.opt-btn:hover{border-color:var(--orange);background:var(--orange-xl);}
-.opt-key{font-weight:800;color:var(--orange);width:18px;flex-shrink:0;}
-.opt-btn.correct{background:#e6f5ec;border-color:var(--green-ok);color:var(--green-ok);}
-.opt-btn.wrong  {background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
-.modal-result{
-  font-size:.95rem;font-weight:700;
-  text-align:center;padding:10px;border-radius:7px;
-  margin-bottom:16px;display:none;
-}
-.modal-result.ok {background:#e6f5ec;color:var(--green-ok);display:block;}
-.modal-result.no {background:#fdecea;color:var(--red-err);display:block;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
-
-/* ══════════════════════════════════════════════
-   VICTORY
-══════════════════════════════════════════════ */
-#victoryScreen{
-  background:var(--orange);
-  justify-content:center;align-items:center;
-  gap:16px;padding:40px 16px;text-align:center;
-}
-.v-trophy{font-size:5rem;animation:vb 1s infinite alternate;}
-@keyframes vb{from{transform:translateY(0)}to{transform:translateY(-10px)}}
-.v-title{font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-1px;}
-.v-sub{font-size:.9rem;color:rgba(255,255,255,.75);margin-bottom:8px;}
-.podium{width:100%;max-width:380px;display:flex;flex-direction:column;gap:6px;}
-.podium-row{
-  display:flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.15);
-  border-radius:8px;padding:10px 16px;
-  font-weight:700;font-size:.95rem;color:#fff;
-}
-.podium-pos{font-size:1.3rem;font-weight:800;width:30px;}
-.winner-row{background:rgba(255,255,255,.28)!important;border:2px solid rgba(255,255,255,.55);}
-
-/* Toast */
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:var(--dark);color:#fff;
-  font-size:.82rem;font-weight:700;
-  padding:9px 22px;border-radius:50px;
-  z-index:300;
-  animation:tin .25s ease, tout .25s ease 2.1s forwards;
-  white-space:nowrap;
-  box-shadow:0 4px 16px rgba(0,0,0,.3);
-}
-@keyframes tin {from{opacity:0;transform:translateX(-50%) translateY(14px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-@keyframes tout{from{opacity:1}to{opacity:0}}
-
-/* Language toggle button */
-.lang-toggle{
-  position:fixed;top:12px;right:14px;z-index:500;
-  display:flex;gap:0;border-radius:6px;overflow:hidden;
+  padding:9px 14px;
+  display:flex;align-items:center;gap:10px;
+  flex-wrap:wrap;
+  position:sticky;top:0;z-index:50;
   box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
-.lang-btn{
-  background:rgba(255,255,255,.25);color:#fff;
-  font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;
-  border:none;padding:6px 12px;cursor:pointer;
-  transition:background .15s;letter-spacing:.5px;
+.topbar-logo{font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:-.5px;white-space:nowrap;}
+.topbar-logo span{color:var(--dark);}
+.topbar-ranking{display:flex;flex-wrap:wrap;gap:5px;flex:1;}
+.rank-chip{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.18);border-radius:50px;
+  padding:3px 10px;font-size:.72rem;font-weight:700;color:#fff;
+  border:1.5px solid rgba(255,255,255,.15);white-space:nowrap;
+  transition:background .2s;
 }
-.lang-btn.active{background:#fff;color:var(--orange);}
-.lang-btn:hover:not(.active){background:rgba(255,255,255,.4);}
+.rank-chip.active-turn{background:rgba(255,255,255,.35);border-color:#fff;}
+.rank-chip .rc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.rank-chip .rc-level{font-size:.8rem;}
 
-/* Turn row tooltip */
-.turn-row{position:relative;}
-.turn-row .tr-tooltip{
-  display:none;
-  position:absolute;
-  left:100%;top:50%;transform:translateY(-50%);
-  margin-left:8px;
-  background:var(--dark);color:#fff;
-  font-size:.72rem;font-weight:600;
-  padding:5px 10px;border-radius:6px;
-  white-space:nowrap;
-  box-shadow:0 2px 10px rgba(0,0,0,.25);
-  pointer-events:none;
-  z-index:50;
-  line-height:1.5;
+/* GAME BODY — 3 column layout, no scroll */
+.game-body{
+  display:grid;
+  grid-template-columns:1fr 280px 220px;
+  grid-template-rows:1fr;
+  gap:12px;
+  padding:12px;
+  flex:1;
+  min-height:0;
+  max-width:1300px;
+  width:100%;
+  margin:0 auto;
+  align-self:stretch;
 }
-.turn-row .tr-tooltip::before{
-  content:'';
-  position:absolute;right:100%;top:50%;transform:translateY(-50%);
-  border:5px solid transparent;
-  border-right-color:var(--dark);
+
+/* WAR BOARD (left) */
+.board-wrap{
+  background:#fff;border-radius:var(--r);
+  padding:12px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;
+  min-height:0;overflow:hidden;
 }
+.board-grid{
+  display:grid;gap:5px;
+  flex:1;
+}
+/* CELLS */
+.cell{
+  border-radius:8px;aspect-ratio:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;
+  transition:transform .12s,box-shadow .12s;
+  border:1.5px solid #e8e8e8;
+  background:#fff;
+  min-width:0;
+  user-select:none;
+}
+.cell.start{background:var(--dark);border-color:var(--dark);color:#fff;cursor:default;}
+.cell.open{border:2px solid var(--orange);background:#fff8f4;}
+.cell.solved{color:#fff;border-color:transparent;}
+.cell.active-q{border:2.5px solid var(--dark)!important;box-shadow:0 0 0 3px rgba(28,28,28,.15);z-index:2;}
+.cell-num{font-size:clamp(.55rem,1.3vw,.95rem);font-weight:800;color:#ccc;line-height:1;}
+.cell.open .cell-num{color:var(--orange);}
+.cell.solved .cell-num{color:rgba(255,255,255,.85);}
+.cell.start .cell-num,.cell.finish .cell-num{color:rgba(255,255,255,.8);font-size:.65rem;}
+.cell-icon{font-size:clamp(.7rem,1.6vw,1.1rem);line-height:1;}
+
+/* MIDDLE — question + sorteador */
+.mid-panel{display:flex;flex-direction:column;gap:10px;min-height:0;}
+.panel-card{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shadow);}
+.panel-title{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--line);}
+
+/* SORTEADOR */
+.sorteador-wrap{display:flex;flex-direction:column;gap:8px;}
+.turn-who{font-size:.75rem;color:var(--muted);font-weight:500;}
+.turn-name{font-size:1rem;font-weight:800;margin-bottom:6px;min-height:22px;}
+.numbers-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;}
+.num-btn{
+  aspect-ratio:1;border-radius:6px;border:none;
+  background:#f0f0f0;color:var(--dark);
+  font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;
+  cursor:pointer;transition:background .12s,transform .1s;
+  display:flex;align-items:center;justify-content:center;
+}
+.num-btn:hover{background:#e0e0e0;transform:scale(1.06);}
+.num-btn.picked{background:var(--orange);color:#fff;transform:scale(1.1);box-shadow:0 3px 10px rgba(255,102,0,.4);}
+.num-btn.conquered{background:#e8e8e8;color:#ccc;cursor:not-allowed;text-decoration:line-through;}
+.num-btn.disabled{pointer-events:none;opacity:.4;}
+
+/* INLINE QUESTION */
+.q-panel-badge{display:inline-block;background:var(--orange);color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 9px;border-radius:4px;margin-bottom:8px;}
+.q-panel-team{font-size:.78rem;font-weight:700;margin-bottom:6px;}
+.q-panel-text{font-size:.88rem;font-weight:700;color:var(--dark);line-height:1.5;margin-bottom:10px;}
+.q-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.opt-btn{background:#f7f7f7;border:1.5px solid #e5e5e5;border-radius:8px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:var(--dark);cursor:pointer;text-align:left;display:flex;gap:8px;align-items:center;transition:border-color .12s,background .12s;}
+.opt-btn:hover{border-color:var(--orange);background:var(--orange-xl);}
+.opt-btn.correct{background:#e6f5ec;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-key{font-weight:800;color:var(--orange);width:16px;flex-shrink:0;}
+.q-result{font-size:.8rem;font-weight:700;padding:8px 10px;border-radius:6px;margin-bottom:8px;display:none;}
+.q-result.ok{background:#e6f5ec;color:var(--green-ok);display:block;}
+.q-result.no{background:#fdecea;color:var(--red-err);display:block;}
+
+/* RIGHT — order + undiscovered */
+.right-panel{display:flex;flex-direction:column;gap:10px;min-height:0;overflow-y:auto;}
+.turn-row{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;position:relative;}
+.turn-row.cur{background:var(--orange-xl);}
+.turn-row.done{opacity:.4;}
+.tr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+/* Tooltip */
+.turn-row .tr-tooltip{display:none;position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:7px;background:var(--dark);color:#fff;font-size:.7rem;font-weight:600;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.25);pointer-events:none;z-index:50;line-height:1.5;}
+.turn-row .tr-tooltip::before{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);border:5px solid transparent;border-right-color:var(--dark);}
 .turn-row:hover .tr-tooltip{display:block;}
 
-/* Responsive */
-@media(max-width:720px){
-  .game-body{grid-template-columns:1fr;}
-  .side-panel{flex-direction:row;flex-wrap:wrap;}
-  .panel-card{flex:1 1 180px;}
+.disc-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:.75rem;}
+.disc-answer{font-weight:600;color:var(--dark);}
+.disc-empty{font-size:.72rem;color:#bbb;font-style:italic;}
+
+/* VICTORY */
+.v-trophy{font-size:4rem;animation:vb 1s infinite alternate;}
+@keyframes vb{from{transform:translateY(0)}to{transform:translateY(-9px)}}
+.v-title{font-size:2rem;font-weight:900;color:#fff;letter-spacing:-1px;}
+.v-sub{font-size:.9rem;color:rgba(255,255,255,.8);margin-bottom:4px;}
+.podium{width:100%;max-width:400px;display:flex;flex-direction:column;gap:6px;}
+.podium-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border-radius:8px;padding:9px 14px;font-weight:700;font-size:.88rem;color:#fff;}
+.podium-row.winner-row{background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);}
+.podium-pos{font-size:1.2rem;font-weight:800;width:28px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;font-size:.8rem;font-weight:700;padding:8px 20px;border-radius:50px;z-index:300;animation:tin .25s ease,tout .25s ease 2.1s forwards;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes tout{from{opacity:1}to{opacity:0}}
+
+@media(max-width:900px){
+  .game-body{grid-template-columns:1fr 240px;grid-template-rows:auto auto;}
+  .right-panel{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;overflow-y:visible;}
+  .right-panel .panel-card{flex:1 1 180px;}
+}
+@media(max-width:600px){
+  .game-body{grid-template-columns:1fr;grid-template-rows:auto;}
+  .mid-panel,.right-panel{grid-column:1;}
 }
 </style>
 </head>
 <body>
 
-<!-- Language toggle -->
-<div class="lang-toggle">
-  <button class="lang-btn active" id="btnPT" onclick="setLang('pt')">PT</button>
-  <button class="lang-btn" id="btnES" onclick="setLang('es')">ES</button>
-</div>
-
 <!-- ══ SETUP ══ -->
 <div id="setupScreen" class="screen active">
-  <div style="width:100%;max-width:660px;padding-bottom:8px;">
+  <div style="width:100%;max-width:700px;padding-bottom:6px;">
     <div class="brand">
-      <div class="brand-logo">Beleza<span> em Jogo</span></div>
-      <div class="brand-sub">Jogo de Tabuleiro</div>
+      <div>
+        <div class="brand-logo">Beleza<span> em Jogo</span></div>
+        <div class="brand-sub">Jogo de Tabuleiro</div>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btnPT" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" id="btnES" onclick="setLang('es')">ES</button>
+      </div>
     </div>
-    <div class="setup-tagline">Configure equipes e perguntas para começar</div>
+    <div class="setup-tagline" id="setupTagline">Relacionamento e Ativação Comercial</div>
   </div>
 
   <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-      <div class="card-title" style="margin-bottom:0"><span>01</span> Equipes</div>
-      <button class="btn sm" id="btnStartGame" onclick="startGame()" style="background:#1a6b4a;box-shadow:0 4px 14px rgba(26,107,74,.35);">▶ Iniciar Jogo</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div class="card-title" style="margin-bottom:0" id="card1Title"><span>01</span> Equipes</div>
+      <button class="btn sm green" id="btnStartGame" onclick="startGame()">▶ Iniciar Jogo</button>
     </div>
     <div class="teams-wrap" id="teamsList"></div>
-    <div id="membersEditor" style="margin-top:16px;"></div>
+    <div id="membersEditor" style="margin-top:14px;"></div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span>02</span> Perguntas</div>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Cada pergunta deve ter 5 opções (A–E) e um gabarito definido.</p>
+    <div class="card-title" id="card2Title"><span>02</span> Perguntas</div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:12px;" id="card2Desc">Cada pergunta deve ter 5 opções (A–E) e um gabarito definido.</p>
     <div id="questionBlocks"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn ghost sm" onclick="addQuestion()">+ Adicionar Pergunta</button>
-      <button class="btn sm" onclick="fillSampleQuestions()">⚡ Carregar Perguntas de Teste</button>
+      <button class="btn ghost sm" onclick="addQuestion()" id="btnAddQ">+ Adicionar Pergunta</button>
+      <button class="btn sm" onclick="fillSampleQuestions()" id="btnSample">⚡ Carregar Perguntas de Teste</button>
     </div>
-    <p id="qCount"></p>
+    <p id="qCount" style="font-size:.72rem;color:var(--muted);margin-top:8px;"></p>
   </div>
-
-  <p id="startError"></p>
+  <p id="startError" style="font-size:.82rem;color:#fff;background:rgba(0,0,0,.2);padding:8px 14px;border-radius:6px;display:none;max-width:700px;width:100%;text-align:center;"></p>
 </div>
 
 <!-- ══ GAME ══ -->
 <div id="gameScreen" class="screen">
+
+  <!-- TOP BAR: logo + ranking left-to-right + lang toggle -->
   <div class="topbar">
     <div class="topbar-logo">Beleza<span> em Jogo</span></div>
-    <div class="scorebar" id="scorebar"></div>
+    <div class="topbar-ranking" id="topbarRanking"></div>
+    <div class="lang-toggle" style="margin-left:6px;">
+      <button class="lang-btn" id="btnPT2" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" id="btnES2" onclick="setLang('es')">ES</button>
+    </div>
   </div>
+
   <div class="game-body">
+
+    <!-- LEFT: War board -->
     <div class="board-wrap">
       <div class="board-grid" id="boardGrid"></div>
     </div>
-    <div class="side-panel">
-      <!-- Dado -->
+
+    <!-- MIDDLE: Sorteador + Question -->
+    <div class="mid-panel">
+
+      <!-- Sorteador -->
       <div class="panel-card">
-        <div class="panel-title" id="panelTitleDice">Dado</div>
-        <div class="dice-who">Vez de:</div>
-        <div class="dice-name" id="turnName">—</div>
-        <div class="dice-scene" onclick="rollDice()">
-          <div class="dice-cube" id="dice">
-            <div class="dice-face front face-1"><div class="dot"></div></div>
-            <div class="dice-face back  face-6"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <div class="dice-face right face-3"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <div class="dice-face left  face-4"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <div class="dice-face top   face-2"><div class="dot"></div><div class="dot"></div></div>
-            <div class="dice-face bottom face-5"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-          </div>
-        </div>
-        <div class="dice-result" id="diceResult"></div>
-        <button class="btn btn-roll sm" id="rollBtn" onclick="rollDice()">Lançar Dado</button>
+        <div class="panel-title" id="panelSortTitle">Sorteio de Casa</div>
+        <div class="turn-who" id="turnWho">Vez de:</div>
+        <div class="turn-name" id="turnName">—</div>
+        <div class="numbers-grid" id="numbersGrid"></div>
+        <div id="sortResult" style="font-size:.82rem;font-weight:700;color:var(--orange);min-height:20px;margin-bottom:6px;text-align:center;"></div>
       </div>
 
-      <!-- Pergunta inline -->
+      <!-- Question Panel -->
       <div class="panel-card" id="questionPanel" style="display:none;">
-        <div class="panel-title">Pergunta — <span id="qPanelBadge" style="color:var(--orange)"></span></div>
-        <div id="qPanelTeam" style="font-size:.82rem;font-weight:700;margin-bottom:10px;"></div>
-        <div id="qPanelText" style="font-size:.88rem;font-weight:700;color:var(--dark);line-height:1.5;margin-bottom:12px;"></div>
-        <div id="qPanelOpts" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
-        <div id="qPanelResult" style="display:none;font-size:.82rem;font-weight:700;padding:8px 10px;border-radius:6px;margin-bottom:10px;"></div>
-        <div id="qPanelActions"></div>
+        <div class="q-panel-badge" id="qBadge">Casa 1</div>
+        <div class="q-panel-team" id="qTeam"></div>
+        <div class="q-panel-text" id="qText"></div>
+        <div class="q-opts" id="qOpts"></div>
+        <div class="q-result" id="qResult"></div>
+        <div id="qActions"></div>
       </div>
-      <!-- Ordem + Descobertas -->
-      <div class="panel-card">
-        <div class="panel-title" id="panelTitleOrder">Ordem de Jogo</div>
-        <div id="turnOrderList"></div>
 
-        <div class="discovered-section">
-          <div class="disc-subtitle" id="discSubtitle">Ainda não descobertas</div>
-          <div id="discoveredList"><div class="disc-empty">Todas descobertas!</div></div>
-        </div>
+    </div>
+
+    <!-- RIGHT: Turn order + Undiscovered -->
+    <div class="right-panel">
+      <div class="panel-card">
+        <div class="panel-title" id="panelOrderTitle">Ordem de Jogo</div>
+        <div id="turnOrderList"></div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title" id="panelUndiscTitle">Ainda não descobertos</div>
+        <div id="undiscoveredList"><div class="disc-empty">—</div></div>
       </div>
     </div>
+
   </div>
 </div>
 
 <!-- ══ VICTORY ══ -->
 <div id="victoryScreen" class="screen">
   <div class="v-trophy">🏆</div>
-  <div class="v-title">Jogo Concluído!</div>
-  <div class="v-sub" id="vWinnerSub">Todas as equipes completaram o tabuleiro</div>
+  <div class="v-title" id="vTitle">Jogo Concluído!</div>
+  <div class="v-sub" id="vSub">Todas as casas foram respondidas</div>
   <div class="podium" id="podium"></div>
   <div id="victoryUndiscovered"></div>
-  <button class="btn white" onclick="resetGame()" style="margin-top:24px;">↺ Jogar Novamente</button>
+  <button class="btn white" onclick="resetGame()" style="margin-top:20px;" id="btnReset">↺ Jogar Novamente</button>
 </div>
 
-<!-- modal removed — question shown inline -->
-
 <script>
-// ────────────────────────────────────────────────
-//  CONSTANTS
-// ────────────────────────────────────────────────
-const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
-const LETTERS = ['A','B','C','D','E'];
-const BOARD_SIZE = 26;
+// ══════════════════════════════════════════════════════
+//  LANGUAGE (declared first — no hoisting issues)
+// ══════════════════════════════════════════════════════
 let LANG = 'pt';
-
 const UI = {
-  brandLogo:    { pt:'Beleza<span> em Jogo</span>',          es:'Belleza<span> en Juego</span>' },
-  brandSub:     { pt:'Jogo de Tabuleiro',                    es:'Juego de Tablero' },
-  tagline:      { pt:'Relacionamento e Ativação Comercial', es:'Relacionamiento y Activación Comercial' },
-  card1Title:   { pt:'<span>01</span> Equipes',              es:'<span>01</span> Equipos' },
-  card1Desc:    { pt:'', es:'' },
-  card2Title:   { pt:'<span>02</span> Perguntas',            es:'<span>02</span> Preguntas' },
-  card2Desc:    { pt:'Cada pergunta deve ter 5 opções (A–E) e um gabarito definido.', es:'Cada pregunta debe tener 5 opciones (A–E) y una respuesta correcta definida.' },
-  btnAddQ:      { pt:'+ Adicionar Pergunta',                 es:'+ Agregar Pregunta' },
-  btnSample:    { pt:'⚡ Carregar Perguntas de Teste',        es:'⚡ Cargar Preguntas de Prueba' },
-  btnStart:     { pt:'▶ Iniciar Jogo',                       es:'▶ Iniciar Juego' },
-  panelDado:    { pt:'Dado',                                 es:'Dado' },
-  panelVez:     { pt:'Vez de:',                              es:'Turno de:' },
-  btnRoll:      { pt:'Lançar Dado',                          es:'Lanzar Dado' },
-  panelOrdem:   { pt:'Ordem de Jogo',                        es:'Orden de Juego' },
-  discSubtitle: { pt:'Ainda não descobertas',                es:'Aún no descubiertas' },
-  discEmpty:    { pt:'Todas descobertas!',                   es:'¡Todas descubiertas!' },
-  cellStart:    { pt:'Início',                               es:'Inicio' },
-  cellEnd:      { pt:'Fim',                                  es:'Fin' },
-  qPanelTitle:  { pt:'Pergunta —',                           es:'Pregunta —' },
-  btnContinue:  { pt:'Continuar →',                          es:'Continuar →' },
-  resultOk:     { pt:(n,c)=>`✓ Correto! ${n} fica na casa ${c}.`, es:(n,c)=>`✓ ¡Correcto! ${n} se queda en la casilla ${c}.` },
-  resultNo:     { pt:'✗ Resposta incorreta. Vez do próximo!', es:'✗ Respuesta incorrecta. ¡Turno del siguiente!' },
-  diceResult:   { pt:(n)=>`Resultado: ${n}`,                 es:(n)=>`Resultado: ${n}` },
-  scoreEnd:     { pt:'✓ Fim',                                es:'✓ Fin' },
-  scoreCasa:    { pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}` },
-  pessoas:      { pt:'pessoas',                              es:'personas' },
-  vTitle:       { pt:'Jogo Concluído!',                      es:'¡Juego Completado!' },
-  vSub:         { pt:'Todas as equipes completaram o tabuleiro', es:'Todos los equipos completaron el tablero' },
-  btnReset:     { pt:'↺ Jogar Novamente',                    es:'↺ Jugar de Nuevo' },
-  qLabel:       { pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}` },
-  qFor:         { pt:(n)=>`${n}`,                            es:(n)=>`${n}` },
-  qBlockLabel:  { pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}` },
-  labelEnunc:   { pt:'Enunciado',                            es:'Enunciado' },
-  labelOpts:    { pt:'Opções (A–E)',                         es:'Opciones (A–E)' },
-  labelGab:     { pt:'Gabarito',                             es:'Respuesta correcta' },
-  placeholderQ: { pt:'Escreva a pergunta...',                es:'Escribe la pregunta...' },
-  placeholderM: { pt:'Nome do participante',                 es:'Nombre del participante' },
-  membTitle:    { pt:'Participantes',                        es:'Participantes' },
-  toastSample:  { pt:'24 perguntas de teste carregadas ✓',   es:'24 preguntas de prueba cargadas ✓' },
-  toastFinish:  { pt:(n,o)=>`🏁 ${n} chegou ao fim! #${o}`,  es:(n,o)=>`🏁 ${n} llegó al final! #${o}` },
+  brandLogo:     {pt:'Beleza<span> em Jogo</span>',          es:'Belleza<span> en Juego</span>'},
+  setupTagline:  {pt:'Relacionamento e Ativação Comercial', es:'Relacionamiento y Activación Comercial'},
+  card1Title:    {pt:'<span>01</span> Equipes',              es:'<span>01</span> Equipos'},
+  card2Title:    {pt:'<span>02</span> Perguntas',            es:'<span>02</span> Preguntas'},
+  card2Desc:     {pt:'Cada pergunta deve ter 5 opções (A–E) e um gabarito definido.', es:'Cada pregunta debe tener 5 opciones (A–E) y una respuesta correcta.'},
+  btnAddQ:       {pt:'+ Adicionar Pergunta',                 es:'+ Agregar Pregunta'},
+  btnSample:     {pt:'⚡ Carregar Perguntas de Teste',        es:'⚡ Cargar Preguntas de Prueba'},
+  btnStart:      {pt:'▶ Iniciar Jogo',                       es:'▶ Iniciar Juego'},
+  panelSort:     {pt:'Sorteio de Casa',                      es:'Sorteo de Casilla'},
+  turnWho:       {pt:'Vez de:',                              es:'Turno de:'},
+  panelOrder:    {pt:'Ordem de Jogo',                        es:'Orden de Juego'},
+  panelUndisc:   {pt:'Ainda não descobertos',               es:'Aún no descubiertos'},
+  allDiscovered: {pt:'Todos descobertos! 🎉',                es:'¡Todos descubiertos! 🎉'},
+  vTitle:        {pt:'Jogo Concluído!',                      es:'¡Juego Completado!'},
+  vSub:          {pt:'Todas as casas foram respondidas',     es:'Todas las casillas fueron respondidas'},
+  btnReset:      {pt:'↺ Jogar Novamente',                    es:'↺ Jugar de Nuevo'},
+  cellStart:     {pt:'Início',                               es:'Inicio'},
+  resultOk:      {pt:(n,c)=>`✓ Correto! ${n} conquista a casa ${c}!`, es:(n,c)=>`✓ ¡Correcto! ${n} conquista la casilla ${c}!`},
+  resultNo:      {pt:'✗ Resposta incorreta. Vez do próximo!', es:'✗ Respuesta incorrecta. ¡Turno del siguiente!'},
+  continueBtn:   {pt:'Continuar →',                          es:'Continuar →'},
+  labelEnunc:    {pt:'Enunciado',                            es:'Enunciado'},
+  labelOpts:     {pt:'Opções (A–E)',                         es:'Opciones (A–E)'},
+  labelGab:      {pt:'Gabarito',                             es:'Respuesta correcta'},
+  placeholderQ:  {pt:'Escreva a pergunta...',                es:'Escribe la pregunta...'},
+  placeholderM:  {pt:'Nome do participante',                 es:'Nombre del participante'},
+  membTitle:     {pt:'Participantes',                        es:'Participantes'},
+  pessoas:       {pt:'pessoas',                              es:'personas'},
+  toastSample:   {pt:'24 perguntas de teste carregadas ✓',   es:'24 preguntas de prueba cargadas ✓'},
+  toastAll:      {pt:'Todas as casas foram respondidas!',    es:'¡Todas las casillas fueron respondidas!'},
+  sortedHouse:   {pt:(n)=>`Casa ${n} sorteada!`,             es:(n)=>`¡Casilla ${n} sorteada!`},
+  qBlockLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
+  qPanelLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
+  winnerIs:      {pt:(n)=>`🎉 Vencedor: ${n}!`,              es:(n)=>`🎉 ¡Ganador: ${n}!`},
+  acertos:       {pt:(n)=>`${n} acerto${n!==1?'s':''}`,      es:(n)=>`${n} acierto${n!==1?'s':''}`},
 };
+function tr(key,...args){
+  const e=UI[key]; if(!e) return key;
+  const v=e[LANG]||e.pt;
+  return typeof v==='function'?v(...args):v;
+}
+function setLang(lang){
+  LANG=lang;
+  ['btnPT','btnPT2'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',lang==='pt');});
+  ['btnES','btnES2'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('active',lang==='es');});
+  applyStaticLang();
+  if(gameState){renderTopbarRanking();renderTurnOrder();renderUndiscovered();renderBoard();}
+  rerenderQBlocks();
+}
+function applyStaticLang(){
+  const s=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html;};
+  const t=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt;};
+  // Logo (all instances)
+  document.querySelectorAll('.brand-logo,.topbar-logo').forEach(el=>el.innerHTML=tr('brandLogo'));
+  // Page title
+  document.title=LANG==='es'?'Belleza en Juego':'Beleza em Jogo';
+  s('card1Title',tr('card1Title')); s('card2Title',tr('card2Title')); s('card2Desc',tr('card2Desc'));
+  t('setupTagline',tr('setupTagline')); t('btnAddQ',tr('btnAddQ')); t('btnSample',tr('btnSample'));
+  t('btnStartGame',tr('btnStart'));
+  t('panelSortTitle',tr('panelSort')); t('turnWho',tr('turnWho'));
+  t('panelOrderTitle',tr('panelOrder')); t('panelUndiscTitle',tr('panelUndisc'));
+  t('vTitle',tr('vTitle')); t('vSub',tr('vSub')); t('btnReset',tr('btnReset'));
+}
 
-function t(key, ...args){
-  const entry = UI[key];
-  if(!entry) return key;
-  const val = entry[LANG] || entry['pt'];
-  return typeof val === 'function' ? val(...args) : val;
+// ══════════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════════
+const LETTERS = ['A','B','C','D','E'];
+const BOARD_SIZE = 24; // 24 question houses
+const COLS = 6; // 6 columns → 4 rows of 6
+
+const LEVELS = [
+  {min:0, emoji:'🌱', name:'Semente'},
+  {min:2, emoji:'🥉', name:'Bronze'},
+  {min:3, emoji:'🥈', name:'Prata'},
+  {min:4, emoji:'🥇', name:'Ouro'},
+  {min:5, emoji:'💎', name:'Diamante'},
+];
+function getLevel(acertos){
+  let lv=LEVELS[0];
+  for(const l of LEVELS) if(acertos>=l.min) lv=l;
+  return lv;
 }
 
 const FIXED_TEAMS = [
-  { name:'Kaiak',      color:'#1565C0', textOn:'#fff' },
-  { name:'PowerStay',  color:'#9C27B0', textOn:'#fff' },
-  { name:'Pur Blanca', color:'#F48FB1', textOn:'#1C1C1C' },
-  { name:'Ekos',       color:'#FFD600', textOn:'#1C1C1C' },
-  { name:'Bothanica',  color:'#388E3C', textOn:'#fff' },
-  { name:'Safran',     color:'#C62828', textOn:'#fff' },
+  {name:'Kaiak',      color:'#1565C0', textOn:'#fff'},
+  {name:'PowerStay',  color:'#9C27B0', textOn:'#fff'},
+  {name:'Pur Blanca', color:'#F48FB1', textOn:'#1C1C1C'},
+  {name:'Ekos',       color:'#FFD600', textOn:'#1C1C1C'},
+  {name:'Bothanica',  color:'#388E3C', textOn:'#fff'},
+  {name:'Safran',     color:'#C62828', textOn:'#fff'},
 ];
-const COLORS  = FIXED_TEAMS.map(t=>t.color);
-const TEXT_ON = FIXED_TEAMS.map(t=>t.textOn);
 
-// Fixed pool of 24 famous people — ALL answers always come from this list
+// ══════════════════════════════════════════════════════
+//  SAMPLE QUESTIONS (bilingual, same person pool)
+// ══════════════════════════════════════════════════════
 const POOL = [
   "Beyoncé","Lady Gaga","Madonna","Rihanna","Taylor Swift",
   "Miley Cyrus","Selena Gomez","Demi Lovato","Ariana Grande","Billie Eilish",
   "Leonardo DiCaprio","Meryl Streep","Angelina Jolie","Brad Pitt","Tom Hanks",
   "Oprah Winfrey","Ellen DeGeneres","Jennifer Lopez","Shakira","Celine Dion",
-  "Michael Jackson","Whitney Houston","Freddie Mercury","David Bowie"
+  "Michael Jackson","Whitney Houston","Freddie Mercury","David Bowie","Adele"
 ];
-
-// Helper: pick N unique people from POOL excluding 'exclude', put 'correct' at position pos (0-4)
-function makePeople(correct, exclude, pos){
-  const others = POOL.filter(p => p !== correct && !exclude.includes(p));
-  // shuffle others
-  for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[others[i],others[j]]=[others[j],others[i]];}
-  const four = others.slice(0,4);
-  const arr = [...four];
-  arr.splice(pos, 0, correct); // insert correct at position
-  return arr; // length 5
-}
-
-// Build 24 questions: correct answer index cycles through positions A-E evenly
 const RAW_QA = [
-  { pt:"Quem trabalhou no Disney Channel antes de se tornar astro global?",           es:"¿Quién trabajó en Disney Channel antes de convertirse en estrella global?",         correct:"Miley Cyrus"      },
-  { pt:"Quem ganhou o Oscar de Melhor Atriz por 'Os Escolhidos' e '25 de Abril'?",   es:"¿Quién ganó el Oscar a Mejor Actriz por 'Kramer vs. Kramer' y 'La decisión de Sophie'?", correct:"Meryl Streep" },
-  { pt:"Quem ficou famosa pela turnê 'Renaissance World Tour' em 2023?",              es:"¿Quién se hizo famosa por la gira 'Renaissance World Tour' en 2023?",               correct:"Beyoncé"          },
-  { pt:"Quem vendeu mais de 300 milhões de discos, o maior de todos os tempos?",      es:"¿Quién ha vendido más de 300 millones de discos, siendo la artista más vendida?",   correct:"Madonna"          },
-  { pt:"Quem interpretou o personagem Jack em 'Titanic' (1997)?",                     es:"¿Quién interpretó al personaje Jack en 'Titanic' (1997)?",                           correct:"Leonardo DiCaprio"},
-  { pt:"Quem ficou conhecida pelo hit 'Bad Guy' lançado com 17 anos?",                es:"¿Quién se hizo famosa con el hit 'Bad Guy' lanzado a los 17 años?",                  correct:"Billie Eilish"    },
-  { pt:"Quem foi vocalista do Queen e morreu em 1991?",                               es:"¿Quién fue vocalista de Queen y murió en 1991?",                                     correct:"Freddie Mercury"  },
-  { pt:"Quem apresentou o talk show mais assistido da TV americana por 25 anos?",     es:"¿Quién presentó el talk show más visto de la TV americana durante 25 años?",         correct:"Oprah Winfrey"    },
-  { pt:"Quem lançou o álbum 'Thriller', o mais vendido da história?",                 es:"¿Quién lanzó el álbum 'Thriller', el más vendido de la historia?",                  correct:"Michael Jackson"  },
-  { pt:"Quem ganhou 6 Grammys na mesma noite em 2010 com 'The Fame Monster'?",        es:"¿Quién ganó 6 Grammys en la misma noche en 2010 con 'The Fame Monster'?",           correct:"Lady Gaga"        },
-  { pt:"Quem estreou em 'Barney & Friends' antes de virar superstar pop?",            es:"¿Quién debutó en 'Barney & Friends' antes de convertirse en superestrella del pop?", correct:"Selena Gomez"    },
-  { pt:"Quem interpretou Lara Croft no cinema em 2001?",                              es:"¿Quién interpretó a Lara Croft en el cine en 2001?",                                 correct:"Angelina Jolie"   },
-  { pt:"Quem ficou famosa pela voz em 'I Will Always Love You'?",                     es:"¿Quién se hizo famosa por la canción 'I Will Always Love You'?",                     correct:"Whitney Houston"  },
-  { pt:"Quem lançou 'Umbrella' em 2007 e tem mais de 250 milhões de discos vendidos?",es:"¿Quién lanzó 'Umbrella' en 2007 y tiene más de 250 millones de discos vendidos?",   correct:"Rihanna"          },
-  { pt:"Quem foi o protagonista de 'Forrest Gump' e 'Náufrago'?",                    es:"¿Quién protagonizó 'Forrest Gump' y 'Náufrago'?",                                    correct:"Tom Hanks"        },
-  { pt:"Quem fez 'Wrecking Ball' e foi Hannah Montana na TV?",                       es:"¿Quién grabó 'Wrecking Ball' y fue Hannah Montana en la TV?",                        correct:"Miley Cyrus"      },
-  { pt:"Quem lançou 'My Heart Will Go On' para a trilha de Titanic?",                es:"¿Quién lanzó 'My Heart Will Go On' para la banda sonora de Titanic?",               correct:"Celine Dion"      },
-  { pt:"Quem ficou famosa pela dança do ventre e hits em espanhol e inglês?",         es:"¿Quién se hizo famosa por la danza del vientre y éxitos en español e inglés?",       correct:"Shakira"          },
-  { pt:"Quem quebrou recordes com a turnê 'Eras Tour' em 2023?",                      es:"¿Quién batió récords con la gira 'Eras Tour' en 2023?",                              correct:"Taylor Swift"     },
-  { pt:"Quem apresentou 'The Ellen DeGeneres Show' por 19 temporadas?",              es:"¿Quién presentó 'The Ellen DeGeneres Show' durante 19 temporadas?",                  correct:"Ellen DeGeneres"  },
-  { pt:"Quem ficou mundialmente famoso com 'Space Oddity' e 'Heroes'?",              es:"¿Quién se hizo mundialmente famoso con 'Space Oddity' y 'Heroes'?",                  correct:"David Bowie"      },
-  { pt:"Quem ganhou o Grammy de Álbum do Ano com '21' em 2012?",                     es:"¿Quién ganó el Grammy al Álbum del Año con '21' en 2012?",                           correct:"Adele"            },
-  { pt:"Quem ficou famosa pela música 'Jenny from the Block' e pelo filme Selena?",  es:"¿Quién se hizo famosa por 'Jenny from the Block' y la película Selena?",             correct:"Jennifer Lopez"   },
-  { pt:"Quem protagonizou 'Mr. & Mrs. Smith' ao lado de Angelina Jolie?",            es:"¿Quién protagonizó 'Sr. y Sra. Smith' junto a Angelina Jolie?",                      correct:"Brad Pitt"        },
+  {pt:"Quem trabalhou no Disney Channel antes de se tornar astro global?",           es:"¿Quién trabajó en Disney Channel antes de convertirse en estrella global?",          correct:"Miley Cyrus"},
+  {pt:"Quem ganhou o Oscar de Melhor Atriz por 'Kramer vs. Kramer' e 'Sophie'?",     es:"¿Quién ganó el Oscar a Mejor Actriz por 'Kramer vs. Kramer' y 'La decisión de Sophie'?", correct:"Meryl Streep"},
+  {pt:"Quem ficou famosa pela turnê 'Renaissance World Tour' em 2023?",              es:"¿Quién se hizo famosa por la gira 'Renaissance World Tour' en 2023?",               correct:"Beyoncé"},
+  {pt:"Quem vendeu mais de 300 milhões de discos, a maior de todos os tempos?",      es:"¿Quién ha vendido más de 300 millones de discos?",                                  correct:"Madonna"},
+  {pt:"Quem interpretou o personagem Jack em 'Titanic' (1997)?",                     es:"¿Quién interpretó a Jack en 'Titanic' (1997)?",                                     correct:"Leonardo DiCaprio"},
+  {pt:"Quem ficou conhecida pelo hit 'Bad Guy' lançado com 17 anos?",                es:"¿Quién se hizo famosa con 'Bad Guy' a los 17 años?",                                correct:"Billie Eilish"},
+  {pt:"Quem foi vocalista do Queen e morreu em 1991?",                               es:"¿Quién fue vocalista de Queen y murió en 1991?",                                    correct:"Freddie Mercury"},
+  {pt:"Quem apresentou o talk show mais assistido da TV americana por 25 anos?",     es:"¿Quién presentó el talk show más visto de la TV americana durante 25 años?",        correct:"Oprah Winfrey"},
+  {pt:"Quem lançou o álbum 'Thriller', o mais vendido da história?",                 es:"¿Quién lanzó el álbum 'Thriller', el más vendido de la historia?",                 correct:"Michael Jackson"},
+  {pt:"Quem ganhou 6 Grammys na mesma noite em 2010 com 'The Fame Monster'?",        es:"¿Quién ganó 6 Grammys en la misma noche en 2010?",                                 correct:"Lady Gaga"},
+  {pt:"Quem estreou em 'Barney & Friends' antes de virar superstar pop?",            es:"¿Quién debutó en 'Barney & Friends' antes de ser superestrella?",                  correct:"Selena Gomez"},
+  {pt:"Quem interpretou Lara Croft no cinema em 2001?",                              es:"¿Quién interpretó a Lara Croft en el cine en 2001?",                               correct:"Angelina Jolie"},
+  {pt:"Quem ficou famosa pela voz em 'I Will Always Love You'?",                     es:"¿Quién se hizo famosa por 'I Will Always Love You'?",                              correct:"Whitney Houston"},
+  {pt:"Quem lançou 'Umbrella' em 2007 e tem mais de 250 milhões de discos?",         es:"¿Quién lanzó 'Umbrella' en 2007?",                                                 correct:"Rihanna"},
+  {pt:"Quem foi o protagonista de 'Forrest Gump' e 'Náufrago'?",                     es:"¿Quién protagonizó 'Forrest Gump' y 'Cast Away'?",                                 correct:"Tom Hanks"},
+  {pt:"Quem fez 'Wrecking Ball' e foi Hannah Montana na TV?",                        es:"¿Quién grabó 'Wrecking Ball' y fue Hannah Montana?",                               correct:"Miley Cyrus"},
+  {pt:"Quem lançou 'My Heart Will Go On' para a trilha de Titanic?",                 es:"¿Quién lanzó 'My Heart Will Go On' para Titanic?",                                 correct:"Celine Dion"},
+  {pt:"Quem ficou famosa pela dança do ventre e hits em espanhol e inglês?",          es:"¿Quién es famosa por la danza del vientre y éxitos en español e inglés?",          correct:"Shakira"},
+  {pt:"Quem quebrou recordes com a turnê 'Eras Tour' em 2023?",                      es:"¿Quién batió récords con la gira 'Eras Tour' en 2023?",                            correct:"Taylor Swift"},
+  {pt:"Quem apresentou 'The Ellen DeGeneres Show' por 19 temporadas?",               es:"¿Quién presentó 'The Ellen DeGeneres Show' durante 19 temporadas?",               correct:"Ellen DeGeneres"},
+  {pt:"Quem ficou mundialmente famoso com 'Space Oddity' e 'Heroes'?",               es:"¿Quién es mundialmente famoso por 'Space Oddity' y 'Heroes'?",                    correct:"David Bowie"},
+  {pt:"Quem ganhou o Grammy de Álbum do Ano com '21' em 2012?",                      es:"¿Quién ganó el Grammy al Álbum del Año con '21' en 2012?",                         correct:"Adele"},
+  {pt:"Quem ficou famosa pela música 'Jenny from the Block' e pelo filme Selena?",   es:"¿Quién es famosa por 'Jenny from the Block' y la película Selena?",               correct:"Jennifer Lopez"},
+  {pt:"Quem protagonizou 'Mr. & Mrs. Smith' ao lado de Angelina Jolie?",             es:"¿Quién protagonizó 'Sr. y Sra. Smith' junto a Angelina Jolie?",                   correct:"Brad Pitt"},
 ];
-
-// Fix "Adele" — she's not in POOL, add her temporarily for that question
-const FULL_POOL = [...POOL, "Adele"];
-
-const SAMPLE_QUESTIONS = RAW_QA.map((item, i) => {
-  const pos = i % 5;
-  const letter = LETTERS[pos];
-  const pool = item.correct === "Adele" ? FULL_POOL : POOL;
-  const others = pool.filter(p => p !== item.correct);
-  for(let j=others.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[others[j],others[k]]=[others[k],others[j]];}
-  const four = others.slice(0,4);
-  const arr = [...four];
-  arr.splice(pos, 0, item.correct);
-  const opts = {};
-  LETTERS.forEach((l,li) => { opts[l] = arr[li]; });
-  // Store both languages + text alias for backward compat
-  return { pt: item.pt, es: item.es, text: item.pt, opts, correct: letter };
-});
-
-// ────────────────────────────────────────────────
-//  STATE
-// ────────────────────────────────────────────────
-let teams=[], questions=[], gameState=null;
-
-// ────────────────────────────────────────────────
-//  SETUP
-// ────────────────────────────────────────────────
-// ── Fixed 6 teams, 4 members each ──────────────────────────
-function initTeams(){
-  teams = FIXED_TEAMS.map((t,i) => ({
-    ...t,
-    id: i+1,
-    members: ['Membro 1','Membro 2','Membro 3','Membro 4'],
-    pos:0, finished:false, finishOrder:null
-  }));
-  renderTeams();
-  renderMembersEditor();
+function buildSampleQuestions(){
+  return RAW_QA.map((item,i)=>{
+    const pos=i%5;
+    const others=POOL.filter(p=>p!==item.correct);
+    for(let j=others.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[others[j],others[k]]=[others[k],others[j]];}
+    const arr=[...others.slice(0,4)];
+    arr.splice(pos,0,item.correct);
+    const opts={};
+    LETTERS.forEach((l,li)=>{opts[l]=arr[li];});
+    return{pt:item.pt,es:item.es,text:item.pt,opts,correct:LETTERS[pos]};
+  });
 }
 
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let teams=[], questions=[], gameState=null;
+let qCount=0, openEditorId=null;
+
+// ══════════════════════════════════════════════════════
+//  TEAM SETUP
+// ══════════════════════════════════════════════════════
+function initTeams(){
+  teams=FIXED_TEAMS.map((t,i)=>({
+    ...t, id:i+1,
+    members:['Membro 1','Membro 2','Membro 3','Membro 4'],
+  }));
+  renderTeams(); renderMembersEditor();
+}
 function renderTeams(){
-  document.getElementById('teamsList').innerHTML = teams.map(t=>`
-    <div class="team-chip" style="cursor:pointer" onclick="toggleEditor(${t.id})">
-      <div class="chip-dot" style="background:${t.color}"></div>
-      <span style="font-weight:800">${t.name}</span>
-      <span style="font-size:.72rem;color:var(--muted);margin-left:4px">${t.members.filter(m=>m.trim()).length} ${UI.pessoas[LANG]}</span>
-      <span style="font-size:.8rem;color:var(--muted);margin-left:4px">▾</span>
-      <span class="chip-rm" title="Remover equipe" onclick="event.stopPropagation();removeTeam(${t.id})">×</span>
+  document.getElementById('teamsList').innerHTML=teams.map(tm=>`
+    <div class="team-chip" onclick="toggleEditor(${tm.id})">
+      <div class="chip-dot" style="background:${tm.color}"></div>
+      <span style="font-weight:800">${tm.name}</span>
+      <span style="font-size:.68rem;color:var(--muted);margin-left:3px">${tm.members.filter(m=>m.trim()).length} ${tr('pessoas')}</span>
+      <span style="font-size:.78rem;color:var(--muted)">▾</span>
+      <span class="chip-rm" onclick="event.stopPropagation();removeTeam(${tm.id})">×</span>
     </div>`).join('');
 }
-
-let openEditorId = null;
-function toggleEditor(id){
-  openEditorId = openEditorId === id ? null : id;
-  renderMembersEditor();
+function removeTeam(id){
+  teams=teams.filter(t=>t.id!==id);
+  if(openEditorId===id)openEditorId=null;
+  renderTeams(); renderMembersEditor();
 }
-
+function toggleEditor(id){openEditorId=openEditorId===id?null:id;renderMembersEditor();}
 function renderMembersEditor(){
-  const el = document.getElementById('membersEditor');
-  if(!openEditorId){ el.innerHTML=''; return; }
-  const tm = teams.find(x=>x.id===openEditorId);
-  if(!tm){ el.innerHTML=''; return; }
+  const el=document.getElementById('membersEditor');
+  if(!openEditorId){el.innerHTML='';return;}
+  const tm=teams.find(x=>x.id===openEditorId);
+  if(!tm){el.innerHTML='';return;}
   el.innerHTML=`
-    <div style="background:#f7f7f7;border-radius:8px;padding:14px;border-left:3px solid ${tm.color}">
-      <div style="font-size:.75rem;font-weight:800;color:${tm.color};text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">${tm.name} — ${UI.membTitle[LANG]}</div>
+    <div style="background:#f7f7f7;border-radius:8px;padding:12px;border-left:3px solid ${tm.color}">
+      <div style="font-size:.72rem;font-weight:800;color:${tm.color};text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">${tm.name} — ${tr('membTitle')}</div>
       ${tm.members.map((m,i)=>`
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <span style="font-size:.72rem;font-weight:700;color:var(--muted);width:16px">${i+1}.</span>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+          <span style="font-size:.7rem;font-weight:700;color:var(--muted);width:14px">${i+1}.</span>
           <input type="text" value="${m}" oninput="updateMember(${tm.id},${i},this.value)"
-            placeholder="${UI.placeholderM[LANG]}"
-            style="margin-bottom:0;flex:1;padding:6px 10px;font-size:.82rem;">
+            placeholder="${tr('placeholderM')}" style="margin-bottom:0;flex:1;padding:5px 9px;font-size:.8rem;">
         </div>`).join('')}
     </div>`;
 }
-
-function updateMember(teamId, idx, val){
-  const tm = teams.find(x=>x.id===teamId);
-  if(tm) tm.members[idx] = val;
+function updateMember(teamId,idx,val){
+  const tm=teams.find(x=>x.id===teamId);
+  if(tm)tm.members[idx]=val;
 }
 
-function removeTeam(id){
-  teams = teams.filter(t => t.id !== id);
-  if(openEditorId === id) openEditorId = null;
-  renderTeams();
-  renderMembersEditor();
-}
-
-let qCount=0;
+// ══════════════════════════════════════════════════════
+//  QUESTION SETUP
+// ══════════════════════════════════════════════════════
 function addQuestion(data){
   if(qCount>=24){toast('Máximo 24 perguntas');return;}
   qCount++;const n=qCount;
@@ -872,12 +545,12 @@ function addQuestion(data){
   d.className='q-block';d.id=`qb_${n}`;
   d.innerHTML=`
     <div class="q-block-header">
-      <span class="q-block-num">Casa ${n}</span>
-      <button class="btn danger sm" onclick="rmQuestion(${n})">✕</button>
+      <span class="q-block-num">${tr('qBlockLabel',n)}</span>
+      <button class="btn sm" style="background:var(--red-err)" onclick="rmQ(${n})">✕</button>
     </div>
-    <label>${t('labelEnunc')}</label>
-    <textarea id="qt_${n}" placeholder="${t('placeholderQ')}">${data?.[LANG]||data?.pt||data?.q||''}</textarea>
-    <label style="margin-bottom:8px">${t('labelOpts')}</label>
+    <label>${tr('labelEnunc')}</label>
+    <textarea id="qt_${n}" placeholder="${tr('placeholderQ')}">${data?.[LANG]||data?.pt||''}</textarea>
+    <label style="margin-bottom:6px">${tr('labelOpts')}</label>
     <div class="opts-grid">
       ${LETTERS.map((l,li)=>`
         <div class="opt-row">
@@ -885,18 +558,16 @@ function addQuestion(data){
           <input type="text" id="qo_${n}_${l}" placeholder="${LANG==='pt'?'Opção':'Opción'} ${l}" value="${data?.opts?.[l]||data?.opts?.[li]||''}">
         </div>`).join('')}
     </div>
-    <div class="correct-row">
-      <label>${t('labelGab')}</label>
-      <select id="qc_${n}">
+    <div style="margin-top:8px">
+      <label>${tr('labelGab')}</label>
+      <select id="qc_${n}" style="margin-bottom:0">
         ${LETTERS.map(l=>`<option value="${l}"${(data?.correct||data?.c)===l?' selected':''}>${l}</option>`).join('')}
       </select>
     </div>`;
   document.getElementById('questionBlocks').appendChild(d);
   updateQCount();
 }
-function rmQuestion(n){
-  const el=document.getElementById(`qb_${n}`);if(el)el.remove();updateQCount();
-}
+function rmQ(n){const el=document.getElementById(`qb_${n}`);if(el)el.remove();updateQCount();}
 function updateQCount(){
   const n=document.querySelectorAll('.q-block').length;
   const el=document.getElementById('qCount');
@@ -905,8 +576,8 @@ function updateQCount(){
 }
 function fillSampleQuestions(){
   document.getElementById('questionBlocks').innerHTML='';qCount=0;
-  SAMPLE_QUESTIONS.forEach(s=>addQuestion(s));
-  toast(t('toastSample'));
+  buildSampleQuestions().forEach(s=>addQuestion(s));
+  toast(tr('toastSample'));
 }
 function collectQ(){
   return Array.from(document.querySelectorAll('.q-block')).map(b=>{
@@ -914,552 +585,383 @@ function collectQ(){
     const text=document.getElementById(`qt_${n}`).value.trim();
     const opts={};LETTERS.forEach(l=>{opts[l]=document.getElementById(`qo_${n}_${l}`)?.value?.trim()||'';});
     const correct=document.getElementById(`qc_${n}`).value;
-    // Try to preserve both languages if loaded from sample
-    const srcQ = questions[parseInt(n)-1];
-    return { pt: srcQ?.pt||text, es: srcQ?.es||text, text, opts, correct };
+    const srcQ=questions[parseInt(n)-1];
+    return{pt:srcQ?.pt||text, es:srcQ?.es||text, text, opts, correct};
   }).filter(q=>q.text);
 }
+function rerenderQBlocks(){
+  document.querySelectorAll('.q-block').forEach(block=>{
+    const n=block.id.split('_')[1];
+    const numEl=block.querySelector('.q-block-num');
+    if(numEl)numEl.textContent=tr('qBlockLabel',n);
+    const labels=block.querySelectorAll('label');
+    if(labels[0])labels[0].textContent=tr('labelEnunc');
+    if(labels[1])labels[1].textContent=tr('labelOpts');
+    if(labels[2])labels[2].textContent=tr('labelGab');
+    const ta=block.querySelector('textarea');
+    if(ta){ta.placeholder=tr('placeholderQ');const srcQ=questions[parseInt(n)-1];if(srcQ)ta.value=srcQ[LANG]||srcQ.pt||ta.value;}
+    LETTERS.forEach(l=>{const inp=document.getElementById(`qo_${n}_${l}`);if(inp)inp.placeholder=`${LANG==='pt'?'Opção':'Opción'} ${l}`;});
+  });
+}
 
-// ────────────────────────────────────────────────
-//  START
-// ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+//  START GAME
+// ══════════════════════════════════════════════════════
 function startGame(){
   const err=document.getElementById('startError');
   err.style.display='none';
+  if(teams.length<1){showErr(LANG==='pt'?'Adicione pelo menos 1 equipe.':'Agrega al menos 1 equipo.');return;}
   questions=collectQ();
-  if(questions.length<24){showErr(`Cadastre 24 perguntas (${questions.length}/24 preenchidas).`);return;}
-  const order=[...teams].sort(()=>Math.random()-.5);
-  gameState={
-    teams:teams.map(t=>({...t,pos:0,finished:false,finishOrder:null})),
-    order:order.map(t=>t.id),
-    curIdx:0,
-    cells:Array.from({length:BOARD_SIZE},(_,i)=>({solved:false,openedBy:null,answerText:'',solvedByTeam:null})),
-    diceRolled:false,finishCount:0,
-  };
-  showScreen('gameScreen');
-  renderBoard();renderScorebar();renderTurnOrder();renderDiscovered();updateTurnLabel();
-}
-function showErr(msg){
-  const e=document.getElementById('startError');
-  e.textContent=msg;e.style.display='block';
-}
+  if(questions.length<24){showErr(`${LANG==='pt'?'Cadastre':'Registra'} 24 ${LANG==='pt'?'perguntas':'preguntas'} (${questions.length}/24).`);return;}
 
-// ────────────────────────────────────────────────
-//  BOARD
-// ────────────────────────────────────────────────
+  const order=[...teams].sort(()=>Math.random()-.5);
+
+  gameState={
+    teams:teams.map(tm=>({...tm, acertos:0, pos:0, finished:false})),
+    order:order.map(tm=>tm.id),
+    curIdx:0,
+    cells:Array.from({length:BOARD_SIZE},(_,i)=>({
+      num:i+1, solved:false, open:false, solvedByTeam:null, answerText:''
+    })),
+    picked:null,       // currently picked house number (1-24)
+    answered:false,    // whether current question was answered
+    gameOver:false,
+  };
+
+  showScreen('gameScreen');
+  renderBoard();
+  renderTopbarRanking();
+  renderTurnOrder();
+  renderUndiscovered();
+  renderNumbersGrid();
+  updateTurnLabel();
+}
+function showErr(msg){const e=document.getElementById('startError');e.textContent=msg;e.style.display='block';}
+
+// ══════════════════════════════════════════════════════
+//  BOARD (war map — 4 rows × 6 cols, snake path)
+// ══════════════════════════════════════════════════════
 function renderBoard(){
   const grid=document.getElementById('boardGrid');
-  const cols=5, rows=Math.ceil(BOARD_SIZE/cols);
-  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  grid.style.gridTemplateColumns=`repeat(${COLS},1fr)`;
   grid.innerHTML='';
-
-  // Build the visual snake path as an ordered list of [gridRow, gridCol]
-  // Row 0: left→right (cols 0..4)
-  // Row 1: right→left (cols 4..0)
-  // etc.
-  // We insert cells into the grid using explicit grid-column placement
-  // so that visual position i always shows cell index i.
-  // This means numbers always increase in the direction the eye reads.
-
-  // First build a 2D grid of placeholders
-  const gridSlots = Array.from({length:rows}, ()=>Array(cols).fill(null));
-
-  // Map cell index → visual snake [row, col]
-  const snakePath = [];
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      const col = (r%2===0) ? c : (cols-1-c);
-      snakePath.push([r, col]);
+  // Snake: row 0 L→R, row 1 R→L, etc.
+  // Build visual order array
+  const snakePath=[];
+  for(let r=0;r<4;r++){
+    for(let c=0;c<COLS;c++){
+      const col=(r%2===0)?c:(COLS-1-c);
+      snakePath.push(r*COLS+col); // grid slot index
     }
   }
+  // cellNum at visual position i = i+1
+  const slots=Array(BOARD_SIZE).fill(null);
+  for(let i=0;i<BOARD_SIZE;i++) slots[snakePath[i]]=i+1; // cellNum 1..24
 
-  for(let i=0;i<BOARD_SIZE;i++){
-    const [r,c]=snakePath[i];
-    gridSlots[r][c]=i;
+  for(let gi=0;gi<BOARD_SIZE;gi++){
+    const cellNum=slots[gi];
+    const el=document.createElement('div');
+    const cell=gameState.cells[cellNum-1];
+    el.id=`cell_${cellNum}`;
+    el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(gameState.picked===cellNum?' active-q':'');
+    if(cell.solved&&cell.solvedByTeam) el.style.background=cell.solvedByTeam.color;
+    const icon=cell.solved?'✅':(cell.open?'❓':'');
+    const numColor=cell.solved?'rgba(255,255,255,.85)':cell.open?'var(--orange)':'#ccc';
+    el.innerHTML=`<div class="cell-icon">${icon}</div><div class="cell-num" style="color:${numColor}">${cellNum}</div>`;
+    grid.appendChild(el);
   }
+}
+function refreshCell(cellNum){
+  const el=document.getElementById(`cell_${cellNum}`);
+  if(!el)return;
+  const cell=gameState.cells[cellNum-1];
+  el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(gameState.picked===cellNum?' active-q':'');
+  el.style.background=cell.solved&&cell.solvedByTeam?cell.solvedByTeam.color:'';
+  const icon=cell.solved?'✅':(cell.open?'❓':'');
+  const numColor=cell.solved?'rgba(255,255,255,.85)':cell.open?'var(--orange)':'#ccc';
+  el.innerHTML=`<div class="cell-icon">${icon}</div><div class="cell-num" style="color:${numColor}">${cellNum}</div>`;
+}
 
-  // Render row by row, left to right — each cell placed via CSS grid-area
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      const idx=gridSlots[r][c];
-      if(idx===null){
-        const e=document.createElement('div');
-        e.style.cssText='opacity:0;aspect-ratio:1';
-        grid.appendChild(e);
-        continue;
-      }
-      const el=document.createElement('div');
-      el.className='cell '+cellClass(idx);
-      el.id=`cell_${idx}`;
-      el.onclick=()=>onCellClick(idx);
-      el.innerHTML=cellContent(idx);
-      applyCellBg(idx, el);
-      grid.appendChild(el);
+// ══════════════════════════════════════════════════════
+//  NUMBERS GRID (sorteador)
+// ══════════════════════════════════════════════════════
+function renderNumbersGrid(){
+  const grid=document.getElementById('numbersGrid');
+  grid.innerHTML='';
+  const diceRolled=gameState.picked!==null;
+  for(let n=1;n<=24;n++){
+    const cell=gameState.cells[n-1];
+    const btn=document.createElement('button');
+    btn.className='num-btn';
+    btn.textContent=n;
+    if(cell.solved){
+      btn.classList.add('conquered');
+      btn.disabled=true;
+    } else if(diceRolled){
+      btn.classList.add('disabled');
+      if(n===gameState.picked) btn.classList.add('picked');
+    } else {
+      btn.onclick=()=>pickNumber(n);
     }
+    grid.appendChild(btn);
   }
 }
-function cellClass(idx){
-  if(idx===0)return'start';
-  if(idx===BOARD_SIZE-1)return'finish';
-  const c=gameState.cells[idx];
-  if(c.solved)return'solved';
-  if(c.openedBy!==null)return'open';
-  return'locked';
+
+function pickNumber(n){
+  if(gameState.picked!==null||gameState.answered) return;
+  const cell=gameState.cells[n-1];
+  if(cell.solved) return;
+
+  gameState.picked=n;
+  cell.open=true;
+  document.getElementById('sortResult').textContent=tr('sortedHouse',n);
+  renderNumbersGrid();
+  refreshCell(n);
+  openQuestion(n);
 }
-function cellContent(idx){
-  const pawns=pawnsHtml(idx);
-  if(idx===0)return`${pawns}<div class="cell-icon">🚩</div><div class="cell-num" style="color:#fff;opacity:.8">${t('cellStart')}</div>`;
-  if(idx===BOARD_SIZE-1)return`${pawns}<div class="cell-icon">🏁</div><div class="cell-num" style="color:#fff;opacity:.8">${t('cellEnd')}</div>`;
-  const c=gameState.cells[idx];
-  let icon,numColor;
-  if(c.solved){icon='✅';numColor='rgba(255,255,255,.9)';}
-  else if(c.openedBy!==null){icon='❓';numColor='var(--orange)';}
-  else{icon='';numColor='#ccc';}
-  return`${pawns}<div class="cell-icon">${icon}</div><div class="cell-num" style="color:${numColor}">${idx}</div>`;
+
+// ══════════════════════════════════════════════════════
+//  QUESTION
+// ══════════════════════════════════════════════════════
+let mState={};
+function openQuestion(cellNum){
+  const q=questions[cellNum-1];
+  const team=currentTeam();
+  mState={cellNum,team,answered:false};
+  document.getElementById('qBadge').textContent=tr('qPanelLabel',cellNum);
+  document.getElementById('qTeam').textContent=team.name;
+  document.getElementById('qTeam').style.color=team.color;
+  document.getElementById('qText').textContent=q[LANG]||q.pt||q.text||'';
+  document.getElementById('qResult').className='q-result';
+  document.getElementById('qResult').textContent='';
+  document.getElementById('qOpts').innerHTML=LETTERS.map(l=>`
+    <button class="opt-btn" id="ob_${l}" onclick="answerQ('${l}')">
+      <span class="opt-key">${l}</span>
+      <span>${q.opts[l]||'—'}</span>
+    </button>`).join('');
+  document.getElementById('qActions').innerHTML='';
+  document.getElementById('questionPanel').style.display='block';
 }
-function applyCellBg(idx, el){
-  const c=gameState.cells[idx];
-  if(idx===0||idx===BOARD_SIZE-1) return; // handled by CSS class
-  if(c.solved && c.solvedByTeam?.color){
-    el.style.background=c.solvedByTeam.color;
+
+function answerQ(chosen){
+  if(mState.answered)return;
+  mState.answered=true;
+  gameState.answered=true;
+  const q=questions[mState.cellNum-1];
+  const team=mState.team;
+  const correct=q.correct;
+
+  // Disable buttons
+  LETTERS.forEach(l=>{
+    const b=document.getElementById(`ob_${l}`);
+    if(b){
+      b.onclick=null;
+      if(chosen===correct){if(l===correct)b.classList.add('correct');}
+      else{if(l===chosen)b.classList.add('wrong');}
+    }
+  });
+
+  const r=document.getElementById('qResult');
+  r.style.display='block'; // force show before setting class
+
+  if(chosen===correct){
+    r.textContent=tr('resultOk',team.name,mState.cellNum);
+    r.className='q-result ok';
+    const ansText=q.opts[correct]||correct;
+    // Update cell
+    gameState.cells[mState.cellNum-1].solved=true;
+    gameState.cells[mState.cellNum-1].solvedByTeam={name:team.name,color:team.color};
+    gameState.cells[mState.cellNum-1].answerText=ansText;
+    // Update team score
+    const gs_team=gameState.teams.find(t=>t.id===team.id);
+    if(gs_team)gs_team.acertos++;
+    refreshCell(mState.cellNum);
+    renderTopbarRanking();
+    renderTurnOrder();
+    renderUndiscovered();
   } else {
-    el.style.background='';
+    r.textContent=tr('resultNo');
+    r.className='q-result no';
+    // Cell stays open (available for re-draw) but not solved
   }
-}
-function pawnsHtml(idx){
-  const here=gameState.teams.filter(tm=>tm.pos===idx&&!tm.finished);
-  if(!here.length)return'';
-  const curId=currentTeam()?.id;
-  return`<div class="cell-pawns">${here.map(tm=>{
-    const members=(tm.members||[]).filter(m=>m.trim());
-    const tip=members.length?`${tm.name}: ${members.join(', ')}`:tm.name;
-    return`<div class="pawn${tm.id===curId?' active-pawn':''}" style="background:${tm.color}" title="${tip}"></div>`;
-  }).join('')}</div>`;
-}
-function refreshCells(...idxs){
-  for(const idx of idxs){
-    const el=document.getElementById(`cell_${idx}`);
-    if(!el)continue;
-    el.className='cell '+cellClass(idx);
-    el.innerHTML=cellContent(idx);
-    applyCellBg(idx, el);
-  }
+
+  document.getElementById('qActions').innerHTML=`
+    <button class="btn confirm sm" style="width:100%" onclick="continueGame()">${tr('continueBtn')}</button>`;
 }
 
-// ────────────────────────────────────────────────
-//  DICE & MOVEMENT
-// ────────────────────────────────────────────────
+function continueGame(){
+  document.getElementById('questionPanel').style.display='none';
+  document.getElementById('sortResult').textContent='';
+
+  // Check if all 24 houses solved
+  const allSolved=gameState.cells.every(c=>c.solved);
+  if(allSolved){
+    toast(tr('toastAll'));
+    setTimeout(showVictory,1000);
+    return;
+  }
+
+  // Advance turn
+  gameState.picked=null;
+  gameState.answered=false;
+  advanceTurn();
+  renderBoard(); // refresh active-q highlight
+  renderNumbersGrid();
+}
+
+// ══════════════════════════════════════════════════════
+//  TURNS
+// ══════════════════════════════════════════════════════
 function currentTeam(){
   if(!gameState)return null;
   const id=gameState.order[gameState.curIdx%gameState.order.length];
-  return gameState.teams.find(t=>t.id===id);
+  return gameState.teams.find(tm=>tm.id===id);
+}
+function advanceTurn(){
+  const total=gameState.order.length;
+  gameState.curIdx=(gameState.curIdx+1)%total;
+  updateTurnLabel();
+  renderTurnOrder();
 }
 function updateTurnLabel(){
   const tm=currentTeam();
   const el=document.getElementById('turnName');
   if(el&&tm){el.textContent=tm.name;el.style.color=tm.color;}
-  const btn=document.getElementById('rollBtn');
-  if(btn)btn.disabled=gameState.diceRolled;
-}
-// ── Die face rotations (rotateX, rotateY) to show each number on front ──
-// Layout: front=1, back=6, right=3, left=4, top=2, bottom=5
-const FACE_ROTATIONS = {
-  1: 'rotateX(0deg)   rotateY(0deg)',    // front
-  6: 'rotateX(0deg)   rotateY(180deg)',  // back
-  3: 'rotateX(0deg)   rotateY(-90deg)', // right
-  4: 'rotateX(0deg)   rotateY(90deg)',  // left
-  2: 'rotateX(-90deg) rotateY(0deg)',   // top
-  5: 'rotateX(90deg)  rotateY(0deg)',   // bottom
-};
-function rollDice(){
-  if(!gameState||gameState.diceRolled)return;
-  const team=currentTeam();
-  if(!team||team.finished){advanceTurn();return;}
-  const dEl=document.getElementById('dice');
-  // Animate: random spin then settle on face
-  dEl.style.transition='none';
-  dEl.style.transform=`rotateX(${Math.random()*720+360}deg) rotateY(${Math.random()*720+360}deg)`;
-  dEl.classList.add('rolling');
-  const roll=Math.floor(Math.random()*6)+1;
-  setTimeout(()=>{
-    dEl.classList.remove('rolling');
-    dEl.style.transition='transform .5s ease';
-    dEl.style.transform=FACE_ROTATIONS[roll];
-  },550);
-  document.getElementById('diceResult').textContent=t('diceResult',roll);
-  const old=team.pos;
-  let nxt=Math.min(team.pos+roll,BOARD_SIZE-1);
-  if(nxt>0&&nxt<BOARD_SIZE-1)nxt=findAvail(nxt);
-  team.pos=nxt;gameState.diceRolled=true;
-  refreshCells(old,nxt);renderScorebar();updateTurnLabel();
-  // Finish?
-  if(nxt===BOARD_SIZE-1){
-    gameState.finishCount++;team.finished=true;team.finishOrder=gameState.finishCount;
-    toast(t('toastFinish',team.name,team.finishOrder));
-    refreshCells(old,nxt);renderTurnOrder();renderScorebar();checkEnd();
-    setTimeout(advanceTurn,1200);return;
-  }
-  if(nxt>0){
-    const cell=gameState.cells[nxt];
-    if(!cell.solved){
-      cell.openedBy=team.id;refreshCells(nxt);
-      setTimeout(()=>openModal(nxt,team),700);
-    }else{setTimeout(advanceTurn,700);}
-  }else{setTimeout(advanceTurn,700);}
-}
-function findAvail(target){
-  // If target is solved, find the next available cell ahead
-  if(!gameState.cells[target].solved) return target;
-  for(let i=target+1;i<BOARD_SIZE-1;i++) if(!gameState.cells[i].solved) return i;
-  return BOARD_SIZE-1; // reach finish if all ahead are solved
-}
-function findPrev(failedCell){
-  for(let i=failedCell-1;i>=0;i--)if(i===0||gameState.cells[i].solved)return i;
-  return 0;
 }
 
-// ────────────────────────────────────────────────
-//  INLINE QUESTION PANEL
-// ────────────────────────────────────────────────
-let mState={};
-function openModal(cellIdx,team){
-  const q=questions[cellIdx-1];
-  mState={cellIdx,team,answered:false};
-  const panel=document.getElementById('questionPanel');
-  document.getElementById('qPanelBadge').textContent=t('qLabel',cellIdx);
-  document.getElementById('qPanelTeam').textContent=team.name;
-  document.getElementById('qPanelTeam').style.color=team.color;
-  document.getElementById('qPanelText').textContent=q[LANG]||q.pt||q.text||'';
-  document.getElementById('qPanelResult').style.display='none';
-  document.getElementById('qPanelResult').textContent='';
-  document.getElementById('qPanelOpts').innerHTML=LETTERS.map(l=>`
-    <button class="opt-btn" id="ob_${l}" onclick="answer('${l}')">
-      <span class="opt-key">${l}</span>
-      <span>${q.opts[l]||'—'}</span>
-    </button>`).join('');
-  document.getElementById('qPanelActions').innerHTML='';
-  panel.style.display='block';
-  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-function answer(chosen){
-  if(mState.answered)return;
-  mState.answered=true;
-  const q=questions[mState.cellIdx-1];
-  const team=mState.team;
-  const correct=q.correct;
-  LETTERS.forEach(l=>{
-    const b=document.getElementById(`ob_${l}`);
-    if(b){
-      b.onclick=null;
-      if(chosen===correct){
-        // only highlight on correct answer
-        if(l===correct) b.classList.add('correct');
-      } else {
-        // wrong: just grey out chosen, don't reveal correct
-        if(l===chosen) b.classList.add('wrong');
-      }
-    }
-  });
-  const r=document.getElementById('qPanelResult');
-  r.style.display='block';
-  if(chosen===correct){
-    r.textContent=t('resultOk',team.name,mState.cellIdx);
-    r.style.background='#e6f5ec'; r.style.color='#1a7a3a';
-    const ansText=q.opts[correct]||correct;
-    gameState.cells[mState.cellIdx].solved=true;
-    gameState.cells[mState.cellIdx].openedBy=team.id;
-    gameState.cells[mState.cellIdx].answerText=ansText;
-    gameState.cells[mState.cellIdx].solvedByTeam={name:team.name,color:team.color};
-    refreshCells(mState.cellIdx);
-    renderDiscovered();
-    // 🏆 House 24 answered correctly = game over!
-    if(mState.cellIdx===BOARD_SIZE-2){
-      gameState.winner=team;
-      document.getElementById('qPanelActions').innerHTML=`<button class="btn confirm sm" style="width:100%;background:#FF6600" onclick="triggerVictory()">${t('btnContinue')}</button>`;
-      return;
-    }
-  }else{
-    r.textContent=t('resultNo');
-    r.style.background='#fdecea'; r.style.color='#cc2200';
-    const prev=findPrev(mState.cellIdx);
-    team.pos=prev; refreshCells(mState.cellIdx,prev); renderScorebar();
-  }
-  document.getElementById('qPanelActions').innerHTML=`<button class="btn confirm sm" style="width:100%" onclick="confirmModal()">${t('btnContinue')}</button>`;
-}
-function confirmModal(){
-  document.getElementById('questionPanel').style.display='none';
-  advanceTurn();
-}
-function closeModal(){}  // no-op, kept for safety
-function onCellClick(idx){
-  if(!gameState||idx===0||idx===BOARD_SIZE-1)return;
-  const c=gameState.cells[idx],team=currentTeam();
-  if(!c.solved&&c.openedBy!==null&&team&&team.pos===idx&&gameState.diceRolled) openModal(idx,team);
-}
-
-// ────────────────────────────────────────────────
-//  TURNS
-// ────────────────────────────────────────────────
-function advanceTurn(){
-  gameState.diceRolled=false;
-  document.getElementById('diceResult').textContent='';
-  document.getElementById('questionPanel').style.display='none';
-  const total=gameState.order.length;
-  let next=(gameState.curIdx+1)%total,tries=0;
-  while(tries<total){
-    const id=gameState.order[next%total];
-    const tm=gameState.teams.find(x=>x.id===id);
-    if(!tm.finished){gameState.curIdx=next%total;break;}
-    next++;tries++;
-  }
-  renderTurnOrder();updateTurnLabel();
-}
-function renderScorebar(){
+// ══════════════════════════════════════════════════════
+//  TOPBAR RANKING
+// ══════════════════════════════════════════════════════
+function renderTopbarRanking(){
   const curId=currentTeam()?.id;
-  document.getElementById('scorebar').innerHTML=gameState.teams.map(tm=>`
-    <div class="score-chip${tm.id===curId?' active':''}"
-         title="${(tm.members||[]).filter(m=>m.trim()).join(', ')}">
-      <div class="sc-dot" style="background:${tm.color}"></div>
+  // Sort by acertos desc, then name
+  const sorted=[...gameState.teams].sort((a,b)=>b.acertos-a.acertos||(a.name>b.name?1:-1));
+  document.getElementById('topbarRanking').innerHTML=sorted.map(tm=>{
+    const lv=getLevel(tm.acertos);
+    return`<div class="rank-chip${tm.id===curId?' active-turn':''}"
+      title="${(tm.members||[]).filter(m=>m.trim()).join(', ')||tm.name}">
+      <div class="rc-dot" style="background:${tm.color}"></div>
       <span>${tm.name}</span>
-      <span style="opacity:.65;font-size:.68rem;margin-left:3px">${tm.finished?t('scoreEnd'):t('scoreCasa',tm.pos)}</span>
-    </div>`).join('');
-}
-function renderTurnOrder(){
-  const curId=currentTeam()?.id;
-  // Find who's leading: highest pos among non-finished; if tied, stable order
-  const active=gameState.teams.filter(t=>!t.finished);
-  const finished=gameState.teams.filter(t=>t.finished);
-  let leaderId=null;
-  if(finished.length>0){
-    // whoever finished first leads
-    leaderId=finished.sort((a,b)=>a.finishOrder-b.finishOrder)[0].id;
-  } else if(active.length>0){
-    const maxPos=Math.max(...active.map(t=>t.pos));
-    const leaders=active.filter(t=>t.pos===maxPos);
-    leaderId=leaders[0].id;
-  }
-  document.getElementById('turnOrderList').innerHTML=gameState.order.map(id=>{
-    const tm=gameState.teams.find(x=>x.id===id);
-    const isLeader=tm.id===leaderId;
-    const memberStr=(tm.members||[]).filter(m=>m.trim()).join('\n');
-    const tooltipHtml=memberStr?`<div class="tr-tooltip">${(tm.members||[]).filter(m=>m.trim()).map(m=>`• ${m}`).join('<br>')}</div>`:'';
-    return`<div class="turn-row${tm.id===curId?' cur':''}${t.finished?' done':''}">
-      <div style="display:flex;flex-direction:column;flex:1;min-width:0">
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="tr-dot" style="background:${tm.color}"></div>
-          <span style="font-weight:800">${tm.name}${tm.finished?` — ${tm.finishOrder}º`:''}</span>
-        </div>
-        ${memberStr?`<div style="font-size:.68rem;color:var(--muted);margin-left:15px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(tm.members||[]).filter(m=>m.trim()).join(', ')}</div>`:''}
-      </div>
-      ${isLeader?`<span title="${LANG==='pt'?'Liderando!':'¡Liderando!'}" style="font-size:1rem;line-height:1">🏆</span>`:''}
-      ${tooltipHtml}
+      <span class="rc-level">${lv.emoji}</span>
+      <span style="opacity:.7;font-size:.68rem">${tr('acertos',tm.acertos)}</span>
     </div>`;
   }).join('');
 }
 
-// ────────────────────────────────────────────────
-//  DISCOVERED ANSWERS
-// ────────────────────────────────────────────────
-function renderDiscovered(){
+// ══════════════════════════════════════════════════════
+//  TURN ORDER LIST
+// ══════════════════════════════════════════════════════
+function renderTurnOrder(){
+  const curId=currentTeam()?.id;
+  document.getElementById('turnOrderList').innerHTML=gameState.order.map(id=>{
+    const tm=gameState.teams.find(x=>x.id===id);
+    const lv=getLevel(tm.acertos);
+    const members=(tm.members||[]).filter(m=>m.trim());
+    const tooltip=members.length?`<div class="tr-tooltip">${members.map(m=>`• ${m}`).join('<br>')}</div>`:'';
+    return`<div class="turn-row${tm.id===curId?' cur':''}">
+      <div class="tr-dot" style="background:${tm.color}"></div>
+      <span style="flex:1;font-weight:700">${tm.name}</span>
+      <span>${lv.emoji}</span>
+      <span style="font-size:.7rem;color:var(--muted)">${tm.acertos}</span>
+      ${tooltip}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  UNDISCOVERED
+// ══════════════════════════════════════════════════════
+function renderUndiscovered(){
   const unsolved=[];
-  for(let i=1;i<BOARD_SIZE-1;i++){
-    if(!gameState.cells[i].solved){
-      const q=questions[i-1];
-      const ansText=q?.opts[q?.correct]||'';
-      if(ansText) unsolved.push(ansText);
+  for(let i=0;i<BOARD_SIZE;i++){
+    const c=gameState.cells[i];
+    if(!c.solved){
+      const q=questions[i];
+      const ans=q?.opts[q?.correct]||'';
+      if(ans)unsolved.push(ans);
     }
   }
-  const el=document.getElementById('discoveredList');
-  if(!unsolved.length){el.innerHTML=`<div class="disc-empty">${t('discEmpty')}</div>`;return;}
-  // Shuffle
+  const el=document.getElementById('undiscoveredList');
+  if(!unsolved.length){el.innerHTML=`<div class="disc-empty">${tr('allDiscovered')}</div>`;return;}
   const shuffled=[...unsolved].sort(()=>Math.random()-.5);
   el.innerHTML=shuffled.map(ans=>`
     <div class="disc-item">
-      <span class="disc-answer" style="color:var(--dark);font-weight:600">${escHtml(ans)}</span>
+      <span class="disc-answer">${escHtml(ans)}</span>
     </div>`).join('');
 }
-function escHtml(s){
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
 
-// ────────────────────────────────────────────────
-//  END GAME
-// ────────────────────────────────────────────────
-function triggerVictory(){
-  document.getElementById('questionPanel').style.display='none';
-  showVictory();
-}
-function checkEnd(){
-  // kept for finish-line logic but main win = house 24
-  if(gameState.teams.every(tm=>tm.finished)) showVictory();
-}
+// ══════════════════════════════════════════════════════
+//  VICTORY
+// ══════════════════════════════════════════════════════
 function showVictory(){
   showScreen('victoryScreen');
 
-  // Winner = team that solved house 24, or first finisher
-  const winner = gameState.winner || gameState.teams.find(tm=>tm.finished);
-  const subEl=document.getElementById('vWinnerSub');
-  if(subEl) subEl.textContent=winner?`🎉 Vencedor: ${winner.name}!`:'Jogo encerrado!';
-
-  // Ranking: teams sorted by number of houses conquered (solved)
-  const solvedByTeam = {};
-  gameState.cells.forEach((c,i)=>{
-    if(i>0 && i<BOARD_SIZE-1 && c.solved && c.solvedByTeam){
-      const key=c.solvedByTeam.name;
-      solvedByTeam[key]=(solvedByTeam[key]||0)+1;
-    }
-  });
-  const ranking=[...gameState.teams].sort((a,b)=>{
-    // winner first
-    if(winner && a.id===winner.id) return -1;
-    if(winner && b.id===winner.id) return 1;
-    return (solvedByTeam[b.name]||0)-(solvedByTeam[a.name]||0);
-  });
+  // Ranking by acertos desc
+  const sorted=[...gameState.teams].sort((a,b)=>b.acertos-a.acertos||(a.name>b.name?1:-1));
+  const winner=sorted[0];
+  document.getElementById('vTitle').textContent=tr('vTitle');
+  document.getElementById('vSub').textContent=winner?tr('winnerIs',winner.name):'';
   const medals=['🥇','🥈','🥉','4º','5º','6º'];
-  document.getElementById('podium').innerHTML=ranking.map((tm,i)=>`
-    <div class="podium-row${tm.id===winner?.id?' winner-row':''}">
-      <span class="podium-pos">${medals[i]}</span>
-      <div class="tr-dot" style="background:${tm.color};width:14px;height:14px;border-radius:50%;flex-shrink:0"></div>
-      <span style="flex:1;font-weight:${tm.id===winner?.id?'800':'600'}">${tm.name}</span>
-      <span style="font-size:.8rem;color:#888">${solvedByTeam[tm.name]||0} casas</span>
-    </div>`).join('');
+  document.getElementById('podium').innerHTML=sorted.map((tm,i)=>{
+    const lv=getLevel(tm.acertos);
+    return`<div class="podium-row${i===0?' winner-row':''}">
+      <span class="podium-pos">${medals[i]||`${i+1}º`}</span>
+      <div class="tr-dot" style="background:${tm.color};width:13px;height:13px;border-radius:50%;flex-shrink:0"></div>
+      <span style="flex:1;font-weight:${i===0?800:600}">${tm.name}</span>
+      <span style="font-size:.9rem">${lv.emoji}</span>
+      <span style="font-size:.75rem;color:rgba(255,255,255,.7)">${tr('acertos',tm.acertos)}</span>
+    </div>`;
+  }).join('');
 
-  // Undiscovered = questions never answered correctly
-  const undiscovered=[];
-  for(let i=1;i<BOARD_SIZE-1;i++){
+  // Undiscovered people
+  const undiscPeople=[];
+  for(let i=0;i<BOARD_SIZE;i++){
     const c=gameState.cells[i];
-    if(!c.solved){
-      const q=questions[i-1];
-      const ans=q?.opts[q?.correct]||'';
-      if(ans) undiscovered.push(ans);
-    }
+    if(!c.solved){const q=questions[i];const ans=q?.opts[q?.correct]||'';if(ans)undiscPeople.push(ans);}
   }
-  const undiscEl=document.getElementById('victoryUndiscovered');
-  if(undiscEl){
-    if(undiscovered.length){
-      undiscEl.innerHTML=`
-        <div style="margin-top:20px;max-width:420px;width:100%">
-          <div style="font-size:.75rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Não descobertos</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
-            ${undiscovered.map(name=>`<span style="background:rgba(255,255,255,.15);color:#fff;padding:4px 12px;border-radius:50px;font-size:.82rem;font-weight:600">${escHtml(name)}</span>`).join('')}
-          </div>
-        </div>`;
-    } else {
-      undiscEl.innerHTML=`<div style="margin-top:16px;font-size:.85rem;color:rgba(255,255,255,.7)">Todos descobertos! 🎉</div>`;
-    }
+  const uel=document.getElementById('victoryUndiscovered');
+  if(undiscPeople.length){
+    uel.innerHTML=`
+      <div style="margin-top:18px;max-width:420px;width:100%">
+        <div style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">${tr('panelUndisc')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">
+          ${undiscPeople.map(name=>`<span style="background:rgba(255,255,255,.15);color:#fff;padding:4px 11px;border-radius:50px;font-size:.78rem;font-weight:600">${escHtml(name)}</span>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    uel.innerHTML=`<div style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.7)">${tr('allDiscovered')}</div>`;
   }
 }
+
+// ══════════════════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════════════════
 function resetGame(){
-  questions=[];qCount=0;gameState=null;
+  questions=[];qCount=0;gameState=null;openEditorId=null;
   document.getElementById('questionBlocks').innerHTML='';
-  document.getElementById('diceResult').textContent='';
-  const dEl=document.getElementById('dice');
-  if(dEl){dEl.style.transition='none';dEl.style.transform=FACE_ROTATIONS[1]||'rotateX(0deg) rotateY(0deg)';}
-  updateQCount();
-  initTeams();
+  updateQCount(); initTeams();
   showScreen('setupScreen');
 }
 
-// ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
 //  UTILS
-// ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 function toast(msg){
-  const tel=document.createElement('div');tel.className='toast';tel.textContent=msg;
-  document.body.appendChild(tel);setTimeout(()=>tel.remove(),2500);
+  const el=document.createElement('div');el.className='toast';el.textContent=msg;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2500);
 }
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
 updateQCount();
-
-// ────────────────────────────────────────────────
-//  LANGUAGE SYSTEM
-// ────────────────────────────────────────────────
-
-function setLang(lang){
-  LANG = lang;
-  document.getElementById('btnPT').classList.toggle('active', lang==='pt');
-  document.getElementById('btnES').classList.toggle('active', lang==='es');
-  applyLangToStaticHTML();
-  // Re-render dynamic parts if game is running
-  if(gameState){
-    renderScorebar(); renderTurnOrder(); renderDiscovered();
-    renderBoard();
-    const qPanel=document.getElementById('questionPanel');
-    if(qPanel && qPanel.style.display!=='none' && mState.cellIdx){
-      // re-render current question panel text
-      const q=questions[mState.cellIdx-1];
-      document.getElementById('qPanelBadge').textContent=t('qLabel',mState.cellIdx);
-      document.getElementById('qPanelText').textContent=q[LANG]||q.pt||q.text||'';
-    }
-  }
-  // Re-render question blocks in setup
-  rerenderQuestionBlocks();
-}
-
-function applyLangToStaticHTML(){
-  // Setup screen
-  const bl=document.querySelector('.brand-logo');        if(bl) bl.innerHTML=t('brandLogo');
-  const bs=document.querySelector('.brand-sub');         if(bs) bs.textContent=t('brandSub');
-  const tl=document.querySelector('.setup-tagline');     if(tl) tl.textContent=t('tagline');
-  const ct=document.querySelectorAll('.card-title');
-  if(ct[0]) ct[0].innerHTML=t('card1Title');
-  if(ct[1]) ct[1].innerHTML=t('card2Title');
-  const cp=document.querySelectorAll('.card > p');
-  if(cp[0]) cp[0].innerHTML=t('card1Desc');
-  if(cp[1]) cp[1].innerHTML=t('card2Desc');
-  const baq=document.querySelector('[onclick="addQuestion()"]');         if(baq) baq.textContent=t('btnAddQ');
-  const bsq=document.querySelector('[onclick="fillSampleQuestions()"]'); if(bsq) bsq.textContent=t('btnSample');
-  const bst=document.getElementById('btnStartGame'); if(bst) bst.textContent=t('btnStart');
-  // Game screen — by ID
-  const ptd=document.getElementById('panelTitleDice');  if(ptd) ptd.textContent=t('panelDado');
-  const pto=document.getElementById('panelTitleOrder'); if(pto) pto.textContent=t('panelOrdem');
-  const dw =document.querySelector('.dice-who');         if(dw)  dw.textContent=t('panelVez');
-  const rb =document.getElementById('rollBtn');          if(rb)  rb.textContent=t('btnRoll');
-  const ds =document.getElementById('discSubtitle');     if(ds)  ds.textContent=t('discSubtitle');
-  // Question panel title prefix
-  const qpt=document.querySelector('#questionPanel .panel-title');
-  if(qpt && mState.cellIdx) qpt.innerHTML=`${t('qPanelTitle')} <span id="qPanelBadge" style="color:var(--orange)">${t('qLabel',mState.cellIdx)}</span>`;
-  // Victory screen
-  const vt=document.querySelector('.v-title');                           if(vt) vt.textContent=t('vTitle');
-  const vs=document.querySelector('.v-sub');                             if(vs) vs.textContent=t('vSub');
-  const vb=document.querySelector('.btn.white[onclick="resetGame()"]');  if(vb) vb.textContent=t('btnReset');
-  // Topbar logo stays bilingual-neutral
-}
-
-function rerenderQuestionBlocks(){
-  // Update label text inside existing question blocks
-  document.querySelectorAll('.q-block').forEach(block=>{
-    const n=block.id.split('_')[1];
-    const numEl=block.querySelector('.q-block-num');
-    if(numEl) numEl.textContent=t('qBlockLabel',n);
-    // labels
-    const labels=block.querySelectorAll('label');
-    if(labels[0]) labels[0].textContent=t('labelEnunc');
-    if(labels[1]) labels[1].textContent=t('labelOpts');
-    if(labels[2]) labels[2].textContent=t('labelGab');
-    // textarea placeholder
-    const ta=block.querySelector('textarea');
-    if(ta) ta.placeholder=t('placeholderQ');
-    // input placeholders for options
-    LETTERS.forEach(l=>{
-      const inp=document.getElementById(`qo_${n}_${l}`);
-      if(inp) inp.placeholder=`${LANG==='pt'?'Opção':'Opción'} ${l}`;
-    });
-    // Swap question text textarea to correct language
-    const q=questions[parseInt(n)-1];
-    if(q && ta){
-      ta.value = q[LANG] || q.pt || q.text || ta.value;
-    }
-  });
-}
-
-// Kick off on load
-applyLangToStaticHTML();
 initTeams();
-
+applyStaticLang();
 </script>
 </body>
 </html>
