@@ -102,22 +102,56 @@ textarea{resize:vertical;min-height:60px;}
 .rank-chip .rc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .rank-chip .rc-level{font-size:.8rem;}
 
-/* GAME BODY — 3 column layout, no scroll */
+/* GAME BODY — 2 col: [board+sorteador | right panel] */
 .game-body{
   display:grid;
-  grid-template-columns:1fr 280px 220px;
-  grid-template-rows:1fr;
-  gap:12px;
+  grid-template-columns:1fr 220px;
+  grid-template-rows:auto;
+  gap:10px;
   padding:12px;
-  flex:1;
-  min-height:0;
-  max-width:1300px;
+  max-width:1200px;
   width:100%;
   margin:0 auto;
   align-self:stretch;
 }
 
-/* WAR BOARD (left) */
+/* LEFT COLUMN: board + sorteador stacked */
+.left-col{display:flex;flex-direction:column;gap:10px;}
+
+/* SORTEADOR — horizontal bar */
+.sorteador-bar{
+  background:#fff;border-radius:var(--r);
+  padding:12px 16px;
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:16px;
+  flex-wrap:wrap;
+}
+.sorteador-bar .team-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:.85rem;font-weight:700;white-space:nowrap;
+}
+.sorteador-bar .team-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.sorteador-divider{width:1px;height:28px;background:#e8e8e8;flex-shrink:0;}
+.sorteador-bar .casa-label{
+  font-size:.78rem;font-weight:600;color:var(--muted);
+  white-space:nowrap;
+}
+.sorteador-bar .slot-number{
+  font-size:2rem;font-weight:900;
+  color:#ddd;
+  letter-spacing:-1px;
+  line-height:1;
+  min-width:48px;
+  transition:color .15s;
+}
+.sorteador-bar .slot-number.landed{
+  animation:landPop .35s ease;
+}
+@keyframes landPop{
+  0%  {transform:scale(1.25);}
+  60% {transform:scale(.92);}
+  100%{transform:scale(1);}
+}
 .board-wrap{
   background:#fff;border-radius:var(--r);
   padding:12px;box-shadow:var(--shadow);
@@ -168,32 +202,6 @@ textarea{resize:vertical;min-height:60px;}
 .panel-card{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shadow);}
 .panel-title{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--line);}
 
-/* SORTEADOR — big slot number */
-.sorteador-wrap{display:flex;flex-direction:column;gap:8px;}
-.turn-who{font-size:.75rem;color:var(--muted);font-weight:500;}
-.turn-name{font-size:1rem;font-weight:800;margin-bottom:6px;min-height:22px;}
-.slot-display{
-  display:flex;align-items:center;justify-content:center;
-  height:80px;margin-bottom:8px;
-}
-.slot-number{
-  font-size:4rem;font-weight:900;
-  color:#ddd;
-  letter-spacing:-2px;
-  line-height:1;
-  transition:color .15s;
-  font-variant-numeric:tabular-nums;
-  min-width:80px;text-align:center;
-}
-.slot-number.landed{
-  color:#1a6b4a;
-  animation:landPop .35s ease;
-}
-@keyframes landPop{
-  0%  {transform:scale(1.3);}
-  60% {transform:scale(.93);}
-  100%{transform:scale(1);}
-}
 
 /* INLINE QUESTION */
 .q-panel-badge{display:inline-block;background:var(--orange);color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 9px;border-radius:4px;margin-bottom:8px;}
@@ -302,27 +310,26 @@ textarea{resize:vertical;min-height:60px;}
 
   <div class="game-body">
 
-    <!-- LEFT: War board -->
-    <div class="board-wrap">
-      <div class="board-grid" id="boardGrid"></div>
-    </div>
-
-    <!-- MIDDLE: Sorteador + Question -->
-    <div class="mid-panel">
-
-      <!-- Sorteador -->
-      <div class="panel-card">
-        <div class="panel-title" id="panelSortTitle">Sorteio de Casa</div>
-        <div class="turn-who" id="turnWho">Vez de:</div>
-        <div class="turn-name" id="turnName">—</div>
-        <div class="slot-display">
-          <div class="slot-number" id="slotNumber">—</div>
-        </div>
-        <div id="sortResult" style="font-size:.78rem;font-weight:700;color:#1a6b4a;min-height:18px;margin-bottom:8px;text-align:center;"></div>
-        <button class="btn" id="btnSortear" onclick="autoSort()" style="width:100%">🎲 Sortear Casa!</button>
+    <!-- LEFT: Board + Sorteador below -->
+    <div class="left-col">
+      <div class="board-wrap">
+        <div class="board-grid" id="boardGrid"></div>
       </div>
 
-      <!-- Question Panel -->
+      <!-- Sorteador — horizontal bar below board -->
+      <div class="sorteador-bar" id="sorteadorBar">
+        <div class="team-label">
+          <div class="team-dot" id="sortTeamDot"></div>
+          <span id="sortTeamName" style="font-weight:800">—</span>
+          <button class="btn sm" id="btnSortear" onclick="autoSort()" style="margin-left:6px;">🎲 Sortear!</button>
+        </div>
+        <div class="sorteador-divider"></div>
+        <div class="casa-label" id="casaLabel">Casa sorteada:</div>
+        <div class="slot-number" id="slotNumber">—</div>
+        <div id="sortResult" style="font-size:.75rem;font-weight:600;color:var(--muted);margin-left:4px;"></div>
+      </div>
+
+      <!-- Question Panel (below sorteador) -->
       <div class="panel-card" id="questionPanel" style="display:none;">
         <div class="q-panel-badge" id="qBadge">Casa 1</div>
         <div class="q-panel-team" id="qTeam"></div>
@@ -331,10 +338,9 @@ textarea{resize:vertical;min-height:60px;}
         <div class="q-result" id="qResult"></div>
         <div id="qActions"></div>
       </div>
-
     </div>
 
-    <!-- RIGHT: Turn order only -->
+    <!-- RIGHT: Turn order -->
     <div class="right-panel">
       <div class="panel-card">
         <div class="panel-title" id="panelOrderTitle">Ordem de Jogo</div>
@@ -391,7 +397,8 @@ const UI = {
   toastSample:   {pt:'24 perguntas de teste carregadas ✓',   es:'24 preguntas de prueba cargadas ✓'},
   toastAll:      {pt:'Todas as casas foram respondidas!',    es:'¡Todas las casillas fueron respondidas!'},
   sortedHouse:   {pt:(n)=>`Casa ${n} sorteada!`,             es:(n)=>`¡Casilla ${n} sorteada!`},
-  btnSortear:    {pt:'🎲 Sortear Casa!',                      es:'🎲 ¡Sortear Casilla!'},
+  btnSortear:    {pt:'🎲 Sortear!',                           es:'🎲 ¡Sortear!'},
+  casaLabel:     {pt:'Casa sorteada:',                       es:'Casilla sorteada:'},
   qBlockLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
   qPanelLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
   winnerIs:      {pt:(n)=>`🎉 Vencedor: ${n}!`,              es:(n)=>`🎉 ¡Ganador: ${n}!`},
@@ -420,8 +427,9 @@ function applyStaticLang(){
   s('card1Title',tr('card1Title')); s('card2Title',tr('card2Title')); s('card2Desc',tr('card2Desc'));
   t('setupTagline',tr('setupTagline')); t('btnAddQ',tr('btnAddQ')); t('btnSample',tr('btnSample'));
   t('btnStartGame',tr('btnStart'));
-  t('panelSortTitle',tr('panelSort')); t('turnWho',tr('turnWho'));
+  t('panelSortTitle',tr('panelSort'));
   t('btnSortear',tr('btnSortear'));
+  t('casaLabel',tr('casaLabel'));
   t('panelOrderTitle',tr('panelOrder')); t('panelUndiscTitle',tr('panelUndisc'));
   t('vTitle',tr('vTitle')); t('vSub',tr('vSub')); t('btnReset',tr('btnReset'));
 }
@@ -746,7 +754,9 @@ function autoSort(){
       const delay=remaining>4?60:60+(4-remaining)*40;
       setTimeout(tick,delay);
     } else {
-      // Landed!
+      // Landed — use team color
+      const teamColor=currentTeam()?.color||'var(--orange)';
+      slotEl.style.color=teamColor;
       slotEl.classList.add('landed');
       document.getElementById('sortResult').textContent=tr('sortedHouse',target);
       gameState.picked=target;
@@ -862,8 +872,18 @@ function advanceTurn(){
 }
 function updateTurnLabel(){
   const tm=currentTeam();
+  // Legacy turn-name (kept in case used elsewhere)
   const el=document.getElementById('turnName');
   if(el&&tm){el.textContent=tm.name;el.style.color=tm.color;}
+  // Sorteador bar
+  const dot=document.getElementById('sortTeamDot');
+  const name=document.getElementById('sortTeamName');
+  if(dot&&tm) dot.style.background=tm.color;
+  if(name&&tm){name.textContent=tm.name;name.style.color=tm.color;}
+  // Reset slot display for new turn
+  const slot=document.getElementById('slotNumber');
+  if(slot){slot.textContent='—';slot.style.color='#ddd';slot.classList.remove('landed');}
+  document.getElementById('sortResult').textContent='';
 }
 
 // ══════════════════════════════════════════════════════
