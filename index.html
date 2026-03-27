@@ -225,8 +225,8 @@ textarea{resize:vertical;min-height:60px;}
 /* RIGHT — order + undiscovered */
 .right-panel{display:flex;flex-direction:column;gap:10px;align-self:stretch;}
 .right-panel .panel-card{flex:1;display:flex;flex-direction:column;}
-.turn-members{margin-top:5px;padding-top:5px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:1px 4px;}
-.turn-members div{font-size:.68rem;color:var(--muted);padding:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.turn-members{margin-top:5px;padding-top:5px;border-top:1px solid var(--line);}
+.turn-members-line{font-size:.68rem;color:var(--muted);line-height:1.4;}
 .turn-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;transition:background .15s;}
 .turn-row.cur{background:var(--orange-xl);}
 .turn-row:hover{background:#f5f5f5;}
@@ -923,12 +923,12 @@ function renderTurnOrder(){
     const lv=getLevel(tm.acertos);
     const members=(tm.members||[]).filter(m=>m.trim());
     const membersHtml=members.length
-      ?`<div class="turn-members">${members.map(m=>`<div>• ${m}</div>`).join('')}</div>`
+      ?`<div class="turn-members"><span class="turn-members-line">${members.join(' / ')}</span></div>`
       :'';
     return`<div class="turn-row${tm.id===curId?' cur':''}" style="flex-direction:column;align-items:stretch;">
         <div style="display:flex;align-items:center;gap:7px;width:100%">
           <div class="tr-dot" style="background:${tm.color}"></div>
-          <span style="flex:1;font-weight:700">${tm.name}</span>
+          <span style="flex:1;font-weight:500">${tm.name}</span>
           <span>${lv.emoji}</span>
           <span style="font-size:.7rem;color:var(--muted)">${tm.acertos} ✓</span>
         </div>
