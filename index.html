@@ -176,7 +176,8 @@ textarea{resize:vertical;min-height:60px;}
   text-align:center;
 }
 .cell.start{background:var(--dark);border-color:var(--dark);color:#fff;cursor:default;}
-.cell.open{border:2px solid var(--orange);background:#fff8f4;}
+.cell.open{border:1.5px solid #e8e8e8;background:#fff;}
+.cell.open .cell-num{color:#ccc;}
 .cell.solved{color:#fff;border-color:transparent;}
 .cell.active-q{border:2.5px solid var(--dark)!important;box-shadow:0 0 0 3px rgba(28,28,28,.15);z-index:2;}
 .cell-num{font-size:clamp(.55rem,1.3vw,.95rem);font-weight:800;color:#ccc;line-height:1;}
@@ -219,7 +220,7 @@ textarea{resize:vertical;min-height:60px;}
 .q-result.no{background:#fdecea;color:var(--red-err);display:block;}
 
 /* RIGHT — order + undiscovered */
-.right-panel{display:flex;flex-direction:column;gap:10px;position:sticky;top:60px;}
+.right-panel{display:flex;flex-direction:column;gap:10px;align-self:start;}
 .turn-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;transition:background .15s;}
 .turn-row.cur{background:var(--orange-xl);}
 .turn-row:hover{background:#f5f5f5;}
@@ -329,7 +330,7 @@ textarea{resize:vertical;min-height:60px;}
     </div>
 
     <!-- COL 2 (30%): Question -->
-    <div class="panel-card" id="questionPanel" style="visibility:hidden;">
+    <div class="panel-card" id="questionPanel" style="visibility:hidden;align-self:start;">
       <div class="q-panel-badge" id="qBadge">Casa 1</div>
       <div class="q-panel-team" id="qTeam"></div>
       <div class="q-panel-text" id="qText"></div>
@@ -645,7 +646,7 @@ function startGame(){
   const order=[...teams].sort(()=>Math.random()-.5);
 
   gameState={
-    teams:teams.map(tm=>({...tm, acertos:0, pos:0, finished:false})),
+    teams:teams.map(tm=>({...tm, acertos:0, acertoOrder:0, finished:false})),
     order:order.map(tm=>tm.id),
     curIdx:0,
     cells:Array.from({length:BOARD_SIZE},(_,i)=>({
@@ -818,7 +819,11 @@ function answerQ(chosen){
     gameState.cells[mState.cellNum-1].answerText=ansText;
     // Update team score
     const gs_team=gameState.teams.find(t=>t.id===team.id);
-    if(gs_team)gs_team.acertos++;
+    if(gs_team){
+      gs_team.acertos++;
+      // acertoOrder tracks total acertos across all teams so far — used for tiebreak (lower = got there first)
+      gs_team.acertoOrder=gameState.totalAcertos=(gameState.totalAcertos||0)+1;
+    }
     refreshCell(mState.cellNum);
     renderTopbarRanking();
     renderTurnOrder();
@@ -954,41 +959,34 @@ function renderUndiscovered(){
 function showVictory(){
   showScreen('victoryScreen');
 
-  // Ranking by acertos desc
-  const sorted=[...gameState.teams].sort((a,b)=>b.acertos-a.acertos||(a.name>b.name?1:-1));
-  const winner=sorted[0];
-  document.getElementById('vTitle').textContent=tr('vTitle');
-  document.getElementById('vSub').textContent=winner?tr('winnerIs',winner.name):'';
-  const medals=['🥇','🥈','🥉','4º','5º','6º'];
+  // Ranking: most acertos wins; tiebreak = who reached their last acerto first (lower acertoOrder = sooner)
+  const sorted=[...gameState.teams].sort((a,b)=>{
+    if(b.acertos !== a.acertos) return b.acertos - a.acertos;
+    return (a.acertoOrder||999) - (b.acertoOrder||999);
+  });
+
+  document.getElementById('vTitle').textContent='Jogo Concluído!';
+  document.getElementById('vSub').textContent='Relacionamento & Ativação Comercial';
+
+  const ordinals=['1º','2º','3º','4º','5º','6º'];
   document.getElementById('podium').innerHTML=sorted.map((tm,i)=>{
     const lv=getLevel(tm.acertos);
+    const members=(tm.members||[]).filter(m=>m.trim());
+    const membersLine=members.length
+      ?`<div style="font-size:.68rem;color:rgba(255,255,255,.65);margin-top:2px;font-weight:500">${members.join(' | ')}</div>`
+      :'';
     return`<div class="podium-row${i===0?' winner-row':''}">
-      <span class="podium-pos">${medals[i]||`${i+1}º`}</span>
+      <span class="podium-pos">${ordinals[i]||`${i+1}º`}</span>
       <div class="tr-dot" style="background:${tm.color};width:13px;height:13px;border-radius:50%;flex-shrink:0"></div>
-      <span style="flex:1;font-weight:${i===0?800:600}">${tm.name}</span>
-      <span style="font-size:.9rem">${lv.emoji}</span>
-      <span style="font-size:.75rem;color:rgba(255,255,255,.7)">${tr('acertos',tm.acertos)}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:${i===0?800:600}">${tm.name} ${lv.emoji}</div>
+        ${membersLine}
+      </div>
+      <span style="font-size:.78rem;color:rgba(255,255,255,.75);white-space:nowrap">${tr('acertos',tm.acertos)}</span>
     </div>`;
   }).join('');
 
-  // Undiscovered people
-  const undiscPeople=[];
-  for(let i=0;i<BOARD_SIZE;i++){
-    const c=gameState.cells[i];
-    if(!c.solved){const q=questions[i];const ans=q?.opts[q?.correct]||'';if(ans)undiscPeople.push(ans);}
-  }
-  const uel=document.getElementById('victoryUndiscovered');
-  if(undiscPeople.length){
-    uel.innerHTML=`
-      <div style="margin-top:18px;max-width:420px;width:100%">
-        <div style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">${tr('panelUndisc')}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">
-          ${undiscPeople.map(name=>`<span style="background:rgba(255,255,255,.15);color:#fff;padding:4px 11px;border-radius:50px;font-size:.78rem;font-weight:600">${escHtml(name)}</span>`).join('')}
-        </div>
-      </div>`;
-  } else {
-    uel.innerHTML=`<div style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.7)">${tr('allDiscovered')}</div>`;
-  }
+  document.getElementById('victoryUndiscovered').innerHTML='';
 }
 
 // ══════════════════════════════════════════════════════
