@@ -239,7 +239,7 @@ textarea{resize:vertical;min-height:60px;}
 @keyframes vb{from{transform:translateY(0)}to{transform:translateY(-9px)}}
 .v-title{font-size:2rem;font-weight:900;color:#fff;letter-spacing:-1px;}
 .v-sub{font-size:.9rem;color:rgba(255,255,255,.8);margin-bottom:4px;}
-.podium{width:100%;max-width:400px;display:flex;flex-direction:column;gap:6px;}
+.podium{width:100%;max-width:500px;display:flex;flex-direction:column;gap:4px;}
 .podium-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border-radius:8px;padding:9px 14px;font-weight:700;font-size:.88rem;color:#fff;}
 .podium-row.winner-row{background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);}
 .podium-pos{font-size:1.2rem;font-weight:800;width:28px;}
@@ -682,10 +682,10 @@ function renderBoard(){
     el.id=`cell_${cellNum}`;
     const isActive=gameState.picked===cellNum;
     el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(isActive?' active-q':'');
-    if(cell.solved&&cell.solvedByTeam) el.style.background=cell.solvedByTeam.color;
-    const numColor=cell.solved?'rgba(255,255,255,.85)':'inherit';
+    el.style.background=cell.solved&&cell.solvedByTeam?cell.solvedByTeam.color:'';
+    const numColor=cell.solved?'rgba(255,255,255,.95)':'inherit';
     const answerLine=cell.solved&&cell.answerText?`<div class="cell-answer">${escHtml(cell.answerText)}</div>`:'';
-    el.innerHTML=`<div class="cell-num" style="color:${numColor}">${cellNum}</div>${answerLine}`;
+    el.innerHTML=`<div class="cell-num" style="color:${numColor};text-shadow:${cell.solved?'0 1px 3px rgba(0,0,0,.3)':'none'}">${cellNum}</div>${answerLine}`;
     grid.appendChild(el);
   }
 }
@@ -695,10 +695,11 @@ function refreshCell(cellNum){
   const cell=gameState.cells[cellNum-1];
   const isActive=gameState.picked===cellNum;
   el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(isActive?' active-q':'');
+  // Apply bg FIRST so text renders on correct background
   el.style.background=cell.solved&&cell.solvedByTeam?cell.solvedByTeam.color:'';
-  const numColor=cell.solved?'rgba(255,255,255,.85)':'inherit';
+  const numColor=cell.solved?'rgba(255,255,255,.95)':'inherit';
   const answerLine=cell.solved&&cell.answerText?`<div class="cell-answer">${escHtml(cell.answerText)}</div>`:'';
-  el.innerHTML=`<div class="cell-num" style="color:${numColor}">${cellNum}</div>${answerLine}`;
+  el.innerHTML=`<div class="cell-num" style="color:${numColor};text-shadow:${cell.solved?'0 1px 3px rgba(0,0,0,.3)':'none'}">${cellNum}</div>${answerLine}`;
 }
 
 // ══════════════════════════════════════════════════════
@@ -974,20 +975,25 @@ function showVictory(){
   document.getElementById('vSub').textContent='Relacionamento & Ativação Comercial';
 
   const ordinals=['1º','2º','3º','4º','5º','6º'];
-  document.getElementById('podium').innerHTML=sorted.map((tm,i)=>{
+  const headerRow=`<div style="display:flex;gap:10px;padding:6px 14px;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:4px;">
+    <span style="width:36px;flex-shrink:0">Lugar</span>
+    <span style="flex:1">Equipe</span>
+    <span style="white-space:nowrap">Produtos Vendidos</span>
+  </div>`;
+  document.getElementById('podium').innerHTML=headerRow+sorted.map((tm,i)=>{
     const lv=getLevel(tm.acertos);
     const members=(tm.members||[]).filter(m=>m.trim());
     const membersLine=members.length
       ?`<div style="font-size:.68rem;color:rgba(255,255,255,.65);margin-top:2px;font-weight:500">${members.join(' | ')}</div>`
       :'';
     return`<div class="podium-row${i===0?' winner-row':''}">
-      <span class="podium-pos">${ordinals[i]||`${i+1}º`}</span>
+      <span class="podium-pos" style="width:36px;flex-shrink:0">${ordinals[i]||`${i+1}º`}</span>
       <div class="tr-dot" style="background:${tm.color};width:13px;height:13px;border-radius:50%;flex-shrink:0"></div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:${i===0?800:600}">${tm.name} ${lv.emoji}</div>
         ${membersLine}
       </div>
-      <span style="font-size:.78rem;color:rgba(255,255,255,.75);white-space:nowrap">${tm.acertos} prod. vendido${tm.acertos!==1?'s':''}</span>
+      <span style="font-size:.95rem;font-weight:800;color:#fff;text-align:right;white-space:nowrap">${tm.acertos}</span>
     </div>`;
   }).join('');
 
