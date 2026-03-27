@@ -125,15 +125,15 @@ textarea{resize:vertical;min-height:60px;}
   min-height:0;overflow:hidden;
 }
 .board-grid{
-  display:grid;gap:3px;
+  display:grid;gap:2px;
   flex:1;
 }
 /* CELLS */
 .cell{
-  border-radius:7px;aspect-ratio:1;
+  border-radius:6px;aspect-ratio:1.2/1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   cursor:default;position:relative;
-  transition:transform .12s,box-shadow .12s;
+  transition:background .2s;
   border:1.5px solid #e8e8e8;
   background:#fff;
   min-width:0;
@@ -154,22 +154,32 @@ textarea{resize:vertical;min-height:60px;}
 .panel-card{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shadow);}
 .panel-title{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--line);}
 
-/* SORTEADOR */
+/* SORTEADOR — big slot number */
 .sorteador-wrap{display:flex;flex-direction:column;gap:8px;}
 .turn-who{font-size:.75rem;color:var(--muted);font-weight:500;}
 .turn-name{font-size:1rem;font-weight:800;margin-bottom:6px;min-height:22px;}
-.numbers-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;}
-.num-btn{
-  aspect-ratio:1;border-radius:6px;border:none;
-  background:#f0f0f0;color:var(--dark);
-  font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;
-  cursor:pointer;transition:background .12s,transform .1s;
+.slot-display{
   display:flex;align-items:center;justify-content:center;
+  height:80px;margin-bottom:8px;
 }
-.num-btn:hover{background:#e0e0e0;transform:scale(1.06);}
-.num-btn.picked{background:var(--orange);color:#fff;transform:scale(1.1);box-shadow:0 3px 10px rgba(255,102,0,.4);}
-.num-btn.conquered{background:#e8e8e8;color:#ccc;cursor:not-allowed;text-decoration:line-through;}
-.num-btn.disabled{pointer-events:none;opacity:.4;}
+.slot-number{
+  font-size:4rem;font-weight:900;
+  color:#ddd;
+  letter-spacing:-2px;
+  line-height:1;
+  transition:color .15s;
+  font-variant-numeric:tabular-nums;
+  min-width:80px;text-align:center;
+}
+.slot-number.landed{
+  color:#1a6b4a;
+  animation:landPop .35s ease;
+}
+@keyframes landPop{
+  0%  {transform:scale(1.3);}
+  60% {transform:scale(.93);}
+  100%{transform:scale(1);}
+}
 
 /* INLINE QUESTION */
 .q-panel-badge{display:inline-block;background:var(--orange);color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 9px;border-radius:4px;margin-bottom:8px;}
@@ -294,8 +304,10 @@ textarea{resize:vertical;min-height:60px;}
         <div class="panel-title" id="panelSortTitle">Sorteio de Casa</div>
         <div class="turn-who" id="turnWho">Vez de:</div>
         <div class="turn-name" id="turnName">—</div>
-        <div class="numbers-grid" id="numbersGrid"></div>
-        <div id="sortResult" style="font-size:.82rem;font-weight:700;color:var(--orange);min-height:20px;margin-bottom:6px;text-align:center;"></div>
+        <div class="slot-display">
+          <div class="slot-number" id="slotNumber">—</div>
+        </div>
+        <div id="sortResult" style="font-size:.78rem;font-weight:700;color:#1a6b4a;min-height:18px;margin-bottom:8px;text-align:center;"></div>
         <button class="btn" id="btnSortear" onclick="autoSort()" style="width:100%">🎲 Sortear Casa!</button>
       </div>
 
@@ -672,48 +684,70 @@ function refreshCell(cellNum){
 }
 
 // ══════════════════════════════════════════════════════
-//  SORTEADOR (auto-random)
+//  SORTEADOR (slot-machine animation)
 // ══════════════════════════════════════════════════════
 function renderNumbersGrid(){
-  // Show remaining available numbers as small read-only chips
-  const grid=document.getElementById('numbersGrid');
-  grid.innerHTML='';
-  for(let n=1;n<=24;n++){
-    const cell=gameState.cells[n-1];
-    const chip=document.createElement('div');
-    chip.className='num-btn'+(cell.solved?' conquered':'')+(gameState.picked===n?' picked':'');
-    chip.textContent=n;
-    chip.style.cursor='default';
-    chip.style.pointerEvents='none';
-    if(cell.solved) chip.style.opacity='.35';
-    grid.appendChild(chip);
-  }
-  // Enable/disable button
+  // Just enable/disable the button — no number grid anymore
   const btn=document.getElementById('btnSortear');
   if(btn){
-    const hasPicked=gameState.picked!==null;
-    btn.disabled=hasPicked;
-    btn.style.opacity=hasPicked?'.45':'1';
-    btn.style.cursor=hasPicked?'not-allowed':'pointer';
+    const locked=gameState.picked!==null;
+    btn.disabled=locked;
+    btn.style.opacity=locked?'.4':'1';
+    btn.style.cursor=locked?'not-allowed':'pointer';
   }
 }
 
 function autoSort(){
   if(gameState.picked!==null) return;
-  // Get all unsolved houses
+
   const available=gameState.cells
     .map((c,i)=>c.solved?null:i+1)
     .filter(n=>n!==null);
   if(!available.length) return;
 
-  // Pick random
-  const n=available[Math.floor(Math.random()*available.length)];
-  gameState.picked=n;
-  gameState.cells[n-1].open=true;
-  document.getElementById('sortResult').textContent=tr('sortedHouse',n);
-  renderNumbersGrid();
-  refreshCell(n);
-  openQuestion(n);
+  const target=available[Math.floor(Math.random()*available.length)];
+
+  // Disable button during animation
+  const btn=document.getElementById('btnSortear');
+  if(btn){btn.disabled=true;btn.style.opacity='.4';}
+  document.getElementById('sortResult').textContent='';
+
+  const slotEl=document.getElementById('slotNumber');
+  slotEl.classList.remove('landed');
+
+  // Build flicker sequence: 10-12 random numbers ending on target
+  const flickerCount=10+Math.floor(Math.random()*5);
+  const allNums=Array.from({length:24},(_,i)=>i+1);
+  const sequence=[];
+  for(let i=0;i<flickerCount;i++){
+    let n;
+    do{ n=allNums[Math.floor(Math.random()*allNums.length)]; }
+    while(sequence.length>0&&n===sequence[sequence.length-1]);
+    sequence.push(n);
+  }
+  sequence.push(target);
+
+  // Animate: fast at start, slow at end
+  let idx=0;
+  function tick(){
+    slotEl.textContent=sequence[idx];
+    idx++;
+    if(idx<sequence.length){
+      // Ease: start at 60ms, slow to 200ms over last 4 steps
+      const remaining=sequence.length-idx;
+      const delay=remaining>4?60:60+(4-remaining)*40;
+      setTimeout(tick,delay);
+    } else {
+      // Landed!
+      slotEl.classList.add('landed');
+      document.getElementById('sortResult').textContent=tr('sortedHouse',target);
+      gameState.picked=target;
+      gameState.cells[target-1].open=true;
+      refreshCell(target);
+      setTimeout(()=>openQuestion(target),400);
+    }
+  }
+  tick();
 }
 
 // ══════════════════════════════════════════════════════
