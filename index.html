@@ -167,7 +167,7 @@ textarea{resize:vertical;min-height:60px;}
   height:clamp(64px,8vw,90px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   cursor:default;position:relative;
-  transition:background .2s;
+  transition:background .2s,border-color .2s;
   border:1.5px solid #e8e8e8;
   background:#fff;
   min-width:0;
@@ -175,15 +175,18 @@ textarea{resize:vertical;min-height:60px;}
   padding:2px 4px;
   text-align:center;
 }
-.cell.start{background:var(--dark);border-color:var(--dark);color:#fff;cursor:default;}
+.cell.start{background:var(--dark);border-color:var(--dark);color:#fff;}
+/* open = sorteada mas ainda não respondida/falhou → neutral */
 .cell.open{border:1.5px solid #e8e8e8;background:#fff;}
-.cell.open .cell-num{color:#ccc;}
+/* active-q = sendo perguntada agora → destaque laranja suave */
+.cell.active-q{border:2px solid var(--orange)!important;background:#fff8f4!important;box-shadow:0 0 0 3px rgba(255,102,0,.12);}
 .cell.solved{color:#fff;border-color:transparent;}
-.cell.active-q{border:1.5px solid #e8e8e8;}
-.cell-num{font-size:clamp(.55rem,1.3vw,.95rem);font-weight:800;color:#ccc;line-height:1;}
-.cell.open .cell-num{color:var(--orange);}
+/* Numbers */
+.cell-num{font-size:clamp(.9rem,2vw,1.4rem);font-weight:800;color:#ccc;line-height:1;}
+.cell.open .cell-num{color:#ccc;}
+.cell.active-q .cell-num{color:var(--orange);}
 .cell.solved .cell-num{color:rgba(255,255,255,.85);}
-.cell.start .cell-num,.cell.finish .cell-num{color:rgba(255,255,255,.8);font-size:.65rem;}
+.cell.start .cell-num{color:rgba(255,255,255,.8);font-size:.75rem;}
 .cell-icon{font-size:clamp(.7rem,1.6vw,1.1rem);line-height:1;}
 .cell-answer{
   font-size:clamp(.45rem,1vw,.7rem);
@@ -677,10 +680,10 @@ function renderBoard(){
     const el=document.createElement('div');
     const cell=gameState.cells[cellNum-1];
     el.id=`cell_${cellNum}`;
-    el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(gameState.picked===cellNum?' active-q':'');
+    const isActive=gameState.picked===cellNum;
+    el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(isActive?' active-q':'');
     if(cell.solved&&cell.solvedByTeam) el.style.background=cell.solvedByTeam.color;
-    const icon=cell.solved?'✅':(cell.open?'❓':'');
-    const numColor=cell.solved?'rgba(255,255,255,.85)':cell.open?'var(--orange)':'#ccc';
+    const numColor=cell.solved?'rgba(255,255,255,.85)':'inherit';
     const answerLine=cell.solved&&cell.answerText?`<div class="cell-answer">${escHtml(cell.answerText)}</div>`:'';
     el.innerHTML=`<div class="cell-num" style="color:${numColor}">${cellNum}</div>${answerLine}`;
     grid.appendChild(el);
@@ -690,10 +693,10 @@ function refreshCell(cellNum){
   const el=document.getElementById(`cell_${cellNum}`);
   if(!el)return;
   const cell=gameState.cells[cellNum-1];
-  el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(gameState.picked===cellNum?' active-q':'');
+  const isActive=gameState.picked===cellNum;
+  el.className='cell'+(cell.solved?' solved':'')+(cell.open&&!cell.solved?' open':'')+(isActive?' active-q':'');
   el.style.background=cell.solved&&cell.solvedByTeam?cell.solvedByTeam.color:'';
-  const icon=cell.solved?'✅':(cell.open?'❓':'');
-  const numColor=cell.solved?'rgba(255,255,255,.85)':cell.open?'var(--orange)':'#ccc';
+  const numColor=cell.solved?'rgba(255,255,255,.85)':'inherit';
   const answerLine=cell.solved&&cell.answerText?`<div class="cell-answer">${escHtml(cell.answerText)}</div>`:'';
   el.innerHTML=`<div class="cell-num" style="color:${numColor}">${cellNum}</div>${answerLine}`;
 }
@@ -830,7 +833,9 @@ function answerQ(chosen){
   } else {
     r.textContent=tr('resultNo');
     r.className='q-result no';
-    // Cell stays open (available for re-draw) but not solved
+    // Remove active-q highlight from cell immediately
+    gameState.picked=null;
+    refreshCell(mState.cellNum);
   }
 
   document.getElementById('qActions').innerHTML=`
