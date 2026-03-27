@@ -102,17 +102,18 @@ textarea{resize:vertical;min-height:60px;}
 .rank-chip .rc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .rank-chip .rc-level{font-size:.8rem;}
 
-/* GAME BODY — 2 col: [board+sorteador | right panel] */
+/* GAME BODY — 3 col: 50% board+sort | 30% question | 20% order */
 .game-body{
   display:grid;
-  grid-template-columns:1fr 220px;
+  grid-template-columns:5fr 3fr 2fr;
   grid-template-rows:auto;
   gap:10px;
   padding:12px;
-  max-width:1200px;
+  max-width:1400px;
   width:100%;
   margin:0 auto;
   align-self:stretch;
+  align-items:start;
 }
 
 /* LEFT COLUMN: board + sorteador stacked */
@@ -218,7 +219,7 @@ textarea{resize:vertical;min-height:60px;}
 .q-result.no{background:#fdecea;color:var(--red-err);display:block;}
 
 /* RIGHT — order + undiscovered */
-.right-panel{display:flex;flex-direction:column;gap:10px;min-height:0;overflow-y:auto;}
+.right-panel{display:flex;flex-direction:column;gap:10px;position:sticky;top:60px;}
 .turn-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;transition:background .15s;}
 .turn-row.cur{background:var(--orange-xl);}
 .turn-row:hover{background:#f5f5f5;}
@@ -310,13 +311,11 @@ textarea{resize:vertical;min-height:60px;}
 
   <div class="game-body">
 
-    <!-- LEFT: Board + Sorteador below -->
+    <!-- COL 1 (50%): Board + Sorteador -->
     <div class="left-col">
       <div class="board-wrap">
         <div class="board-grid" id="boardGrid"></div>
       </div>
-
-      <!-- Sorteador — horizontal bar below board -->
       <div class="sorteador-bar" id="sorteadorBar">
         <div class="team-label">
           <div class="team-dot" id="sortTeamDot"></div>
@@ -326,21 +325,20 @@ textarea{resize:vertical;min-height:60px;}
         <div class="sorteador-divider"></div>
         <div class="casa-label" id="casaLabel">Casa sorteada:</div>
         <div class="slot-number" id="slotNumber">—</div>
-        <div id="sortResult" style="font-size:.75rem;font-weight:600;color:var(--muted);margin-left:4px;"></div>
-      </div>
-
-      <!-- Question Panel (below sorteador) -->
-      <div class="panel-card" id="questionPanel" style="display:none;">
-        <div class="q-panel-badge" id="qBadge">Casa 1</div>
-        <div class="q-panel-team" id="qTeam"></div>
-        <div class="q-panel-text" id="qText"></div>
-        <div class="q-opts" id="qOpts"></div>
-        <div class="q-result" id="qResult"></div>
-        <div id="qActions"></div>
       </div>
     </div>
 
-    <!-- RIGHT: Turn order -->
+    <!-- COL 2 (30%): Question -->
+    <div class="panel-card" id="questionPanel" style="visibility:hidden;">
+      <div class="q-panel-badge" id="qBadge">Casa 1</div>
+      <div class="q-panel-team" id="qTeam"></div>
+      <div class="q-panel-text" id="qText"></div>
+      <div class="q-opts" id="qOpts"></div>
+      <div class="q-result" id="qResult"></div>
+      <div id="qActions"></div>
+    </div>
+
+    <!-- COL 3 (20%): Turn order -->
     <div class="right-panel">
       <div class="panel-card">
         <div class="panel-title" id="panelOrderTitle">Ordem de Jogo</div>
@@ -726,7 +724,6 @@ function autoSort(){
   // Disable button during animation
   const btn=document.getElementById('btnSortear');
   if(btn){btn.disabled=true;btn.style.opacity='.4';}
-  document.getElementById('sortResult').textContent='';
 
   const slotEl=document.getElementById('slotNumber');
   slotEl.classList.remove('landed');
@@ -758,7 +755,6 @@ function autoSort(){
       const teamColor=currentTeam()?.color||'var(--orange)';
       slotEl.style.color=teamColor;
       slotEl.classList.add('landed');
-      document.getElementById('sortResult').textContent=tr('sortedHouse',target);
       gameState.picked=target;
       gameState.cells[target-1].open=true;
       refreshCell(target);
@@ -788,7 +784,7 @@ function openQuestion(cellNum){
       <span>${q.opts[l]||'—'}</span>
     </button>`).join('');
   document.getElementById('qActions').innerHTML='';
-  document.getElementById('questionPanel').style.display='block';
+  document.getElementById('questionPanel').style.visibility='visible';
 }
 
 function answerQ(chosen){
@@ -837,8 +833,7 @@ function answerQ(chosen){
 }
 
 function continueGame(){
-  document.getElementById('questionPanel').style.display='none';
-  document.getElementById('sortResult').textContent='';
+  document.getElementById('questionPanel').style.visibility='hidden';
 
   // Check if all 24 houses solved
   const allSolved=gameState.cells.every(c=>c.solved);
@@ -883,7 +878,6 @@ function updateTurnLabel(){
   // Reset slot display for new turn
   const slot=document.getElementById('slotNumber');
   if(slot){slot.textContent='—';slot.style.color='#ddd';slot.classList.remove('landed');}
-  document.getElementById('sortResult').textContent='';
 }
 
 // ══════════════════════════════════════════════════════
