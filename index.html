@@ -125,14 +125,14 @@ textarea{resize:vertical;min-height:60px;}
   min-height:0;overflow:hidden;
 }
 .board-grid{
-  display:grid;gap:5px;
+  display:grid;gap:3px;
   flex:1;
 }
 /* CELLS */
 .cell{
-  border-radius:8px;aspect-ratio:1;
+  border-radius:7px;aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;position:relative;
+  cursor:default;position:relative;
   transition:transform .12s,box-shadow .12s;
   border:1.5px solid #e8e8e8;
   background:#fff;
@@ -296,6 +296,7 @@ textarea{resize:vertical;min-height:60px;}
         <div class="turn-name" id="turnName">—</div>
         <div class="numbers-grid" id="numbersGrid"></div>
         <div id="sortResult" style="font-size:.82rem;font-weight:700;color:var(--orange);min-height:20px;margin-bottom:6px;text-align:center;"></div>
+        <button class="btn" id="btnSortear" onclick="autoSort()" style="width:100%">🎲 Sortear Casa!</button>
       </div>
 
       <!-- Question Panel -->
@@ -371,6 +372,7 @@ const UI = {
   toastSample:   {pt:'24 perguntas de teste carregadas ✓',   es:'24 preguntas de prueba cargadas ✓'},
   toastAll:      {pt:'Todas as casas foram respondidas!',    es:'¡Todas las casillas fueron respondidas!'},
   sortedHouse:   {pt:(n)=>`Casa ${n} sorteada!`,             es:(n)=>`¡Casilla ${n} sorteada!`},
+  btnSortear:    {pt:'🎲 Sortear Casa!',                      es:'🎲 ¡Sortear Casilla!'},
   qBlockLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
   qPanelLabel:   {pt:(n)=>`Casa ${n}`,                       es:(n)=>`Casilla ${n}`},
   winnerIs:      {pt:(n)=>`🎉 Vencedor: ${n}!`,              es:(n)=>`🎉 ¡Ganador: ${n}!`},
@@ -400,6 +402,7 @@ function applyStaticLang(){
   t('setupTagline',tr('setupTagline')); t('btnAddQ',tr('btnAddQ')); t('btnSample',tr('btnSample'));
   t('btnStartGame',tr('btnStart'));
   t('panelSortTitle',tr('panelSort')); t('turnWho',tr('turnWho'));
+  t('btnSortear',tr('btnSortear'));
   t('panelOrderTitle',tr('panelOrder')); t('panelUndiscTitle',tr('panelUndisc'));
   t('vTitle',tr('vTitle')); t('vSub',tr('vSub')); t('btnReset',tr('btnReset'));
 }
@@ -639,27 +642,13 @@ function startGame(){
 function showErr(msg){const e=document.getElementById('startError');e.textContent=msg;e.style.display='block';}
 
 // ══════════════════════════════════════════════════════
-//  BOARD (war map — 4 rows × 6 cols, snake path)
+//  BOARD (war map — 6 cols × 4 rows, straight 1→24)
 // ══════════════════════════════════════════════════════
 function renderBoard(){
   const grid=document.getElementById('boardGrid');
   grid.style.gridTemplateColumns=`repeat(${COLS},1fr)`;
   grid.innerHTML='';
-  // Snake: row 0 L→R, row 1 R→L, etc.
-  // Build visual order array
-  const snakePath=[];
-  for(let r=0;r<4;r++){
-    for(let c=0;c<COLS;c++){
-      const col=(r%2===0)?c:(COLS-1-c);
-      snakePath.push(r*COLS+col); // grid slot index
-    }
-  }
-  // cellNum at visual position i = i+1
-  const slots=Array(BOARD_SIZE).fill(null);
-  for(let i=0;i<BOARD_SIZE;i++) slots[snakePath[i]]=i+1; // cellNum 1..24
-
-  for(let gi=0;gi<BOARD_SIZE;gi++){
-    const cellNum=slots[gi];
+  for(let cellNum=1;cellNum<=BOARD_SIZE;cellNum++){
     const el=document.createElement('div');
     const cell=gameState.cells[cellNum-1];
     el.id=`cell_${cellNum}`;
@@ -683,37 +672,44 @@ function refreshCell(cellNum){
 }
 
 // ══════════════════════════════════════════════════════
-//  NUMBERS GRID (sorteador)
+//  SORTEADOR (auto-random)
 // ══════════════════════════════════════════════════════
 function renderNumbersGrid(){
+  // Show remaining available numbers as small read-only chips
   const grid=document.getElementById('numbersGrid');
   grid.innerHTML='';
-  const diceRolled=gameState.picked!==null;
   for(let n=1;n<=24;n++){
     const cell=gameState.cells[n-1];
-    const btn=document.createElement('button');
-    btn.className='num-btn';
-    btn.textContent=n;
-    if(cell.solved){
-      btn.classList.add('conquered');
-      btn.disabled=true;
-    } else if(diceRolled){
-      btn.classList.add('disabled');
-      if(n===gameState.picked) btn.classList.add('picked');
-    } else {
-      btn.onclick=()=>pickNumber(n);
-    }
-    grid.appendChild(btn);
+    const chip=document.createElement('div');
+    chip.className='num-btn'+(cell.solved?' conquered':'')+(gameState.picked===n?' picked':'');
+    chip.textContent=n;
+    chip.style.cursor='default';
+    chip.style.pointerEvents='none';
+    if(cell.solved) chip.style.opacity='.35';
+    grid.appendChild(chip);
+  }
+  // Enable/disable button
+  const btn=document.getElementById('btnSortear');
+  if(btn){
+    const hasPicked=gameState.picked!==null;
+    btn.disabled=hasPicked;
+    btn.style.opacity=hasPicked?'.45':'1';
+    btn.style.cursor=hasPicked?'not-allowed':'pointer';
   }
 }
 
-function pickNumber(n){
-  if(gameState.picked!==null||gameState.answered) return;
-  const cell=gameState.cells[n-1];
-  if(cell.solved) return;
+function autoSort(){
+  if(gameState.picked!==null) return;
+  // Get all unsolved houses
+  const available=gameState.cells
+    .map((c,i)=>c.solved?null:i+1)
+    .filter(n=>n!==null);
+  if(!available.length) return;
 
+  // Pick random
+  const n=available[Math.floor(Math.random()*available.length)];
   gameState.picked=n;
-  cell.open=true;
+  gameState.cells[n-1].open=true;
   document.getElementById('sortResult').textContent=tr('sortedHouse',n);
   renderNumbersGrid();
   refreshCell(n);
