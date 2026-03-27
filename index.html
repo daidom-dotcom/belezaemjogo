@@ -102,10 +102,10 @@ textarea{resize:vertical;min-height:60px;}
 .rank-chip .rc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .rank-chip .rc-level{font-size:.8rem;}
 
-/* GAME BODY — 3 col: 50% board+sort | 30% question | 20% order */
+/* GAME BODY — 3 col: 50% board+sort | 20% order | 30% question */
 .game-body{
   display:grid;
-  grid-template-columns:5fr 3fr 2fr;
+  grid-template-columns:5fr 2fr 3fr;
   grid-template-rows:auto;
   gap:10px;
   padding:12px;
@@ -223,7 +223,10 @@ textarea{resize:vertical;min-height:60px;}
 .q-result.no{background:#fdecea;color:var(--red-err);display:block;}
 
 /* RIGHT — order + undiscovered */
-.right-panel{display:flex;flex-direction:column;gap:10px;align-self:start;}
+.right-panel{display:flex;flex-direction:column;gap:10px;align-self:stretch;}
+.right-panel .panel-card{flex:1;display:flex;flex-direction:column;}
+.turn-members{margin-top:4px;padding-top:6px;border-top:1px solid var(--line);}
+.turn-members div{font-size:.72rem;color:var(--muted);padding:2px 0;}
 .turn-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;transition:background .15s;}
 .turn-row.cur{background:var(--orange-xl);}
 .turn-row:hover{background:#f5f5f5;}
@@ -332,22 +335,22 @@ textarea{resize:vertical;min-height:60px;}
       </div>
     </div>
 
-    <!-- COL 2 (30%): Question -->
-    <div class="panel-card" id="questionPanel" style="visibility:hidden;align-self:start;">
+    <!-- COL 2 (20%): Turn order — full height, members always shown -->
+    <div class="right-panel">
+      <div class="panel-card">
+        <div class="panel-title" id="panelOrderTitle">Ordem de Jogo</div>
+        <div id="turnOrderList"></div>
+      </div>
+    </div>
+
+    <!-- COL 3 (30%): Question — same height as col2 -->
+    <div class="panel-card" id="questionPanel" style="visibility:hidden;align-self:stretch;">
       <div class="q-panel-badge" id="qBadge">Casa 1</div>
       <div class="q-panel-team" id="qTeam"></div>
       <div class="q-panel-text" id="qText"></div>
       <div class="q-opts" id="qOpts"></div>
       <div class="q-result" id="qResult"></div>
       <div id="qActions"></div>
-    </div>
-
-    <!-- COL 3 (20%): Turn order -->
-    <div class="right-panel">
-      <div class="panel-card">
-        <div class="panel-title" id="panelOrderTitle">Ordem de Jogo</div>
-        <div id="turnOrderList"></div>
-      </div>
     </div>
 
   </div>
@@ -814,25 +817,34 @@ function answerQ(chosen){
   r.style.display='block'; // force show before setting class
 
   if(chosen===correct){
-    r.textContent=tr('resultOk',team.name,mState.cellNum);
-    r.className='q-result ok';
     const ansText=q.opts[correct]||correct;
+    // Capture level BEFORE updating score
+    const gs_team=gameState.teams.find(t=>t.id===team.id);
+    const lvBefore=getLevel(gs_team?gs_team.acertos:0);
     // Update cell
     gameState.cells[mState.cellNum-1].solved=true;
     gameState.cells[mState.cellNum-1].solvedByTeam={name:team.name,color:team.color};
     gameState.cells[mState.cellNum-1].answerText=ansText;
     // Update team score
-    const gs_team=gameState.teams.find(t=>t.id===team.id);
     if(gs_team){
       gs_team.acertos++;
-      // acertoOrder tracks total acertos across all teams so far — used for tiebreak (lower = got there first)
       gs_team.acertoOrder=gameState.totalAcertos=(gameState.totalAcertos||0)+1;
     }
+    const lvAfter=getLevel(gs_team?gs_team.acertos:0);
+    // Personalized message
+    const evolved=lvAfter.name!==lvBefore.name;
+    const msg=evolved
+      ? `🎉 ${team.name} vendeu mais um produto e virou ${lvAfter.name}! ${lvAfter.emoji}`
+      : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji} (${gs_team?.acertos} vendido${gs_team?.acertos!==1?'s':''})`;
+    r.textContent=msg;
+    r.className='q-result ok';
     refreshCell(mState.cellNum);
     renderTopbarRanking();
     renderTurnOrder();
   } else {
-    r.textContent=tr('resultNo');
+    const gs_team=gameState.teams.find(t=>t.id===team.id);
+    const lv=getLevel(gs_team?gs_team.acertos:0);
+    r.textContent=`${team.name} não vendeu e não evoluiu no plano de crescimento. ${lv.emoji}`;
     r.className='q-result no';
     // Remove active-q highlight from cell immediately
     gameState.picked=null;
@@ -899,6 +911,9 @@ function renderTopbarRanking(){ /* removed per user request */ }
 // ══════════════════════════════════════════════════════
 //  TURN ORDER LIST
 // ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  TURN ORDER LIST — members always visible
+// ══════════════════════════════════════════════════════
 function renderTurnOrder(){
   const curId=currentTeam()?.id;
   document.getElementById('turnOrderList').innerHTML=gameState.order.map(id=>{
@@ -906,37 +921,18 @@ function renderTurnOrder(){
     const lv=getLevel(tm.acertos);
     const members=(tm.members||[]).filter(m=>m.trim());
     const membersHtml=members.length
-      ?`<div id="members_${tm.id}" style="display:none;padding:6px 0 2px 15px;border-top:1px solid var(--line);margin-top:5px;">
-          ${members.map(m=>`<div style="font-size:.7rem;color:var(--muted);padding:2px 0">• ${m}</div>`).join('')}
-        </div>`
+      ?`<div class="turn-members">${members.map(m=>`<div>• ${m}</div>`).join('')}</div>`
       :'';
-    return`<div class="turn-row${tm.id===curId?' cur':''}"
-        style="flex-direction:column;align-items:stretch;cursor:${members.length?'pointer':'default'}"
-        onclick="toggleMembers(${tm.id})">
+    return`<div class="turn-row${tm.id===curId?' cur':''}" style="flex-direction:column;align-items:stretch;">
         <div style="display:flex;align-items:center;gap:7px;width:100%">
           <div class="tr-dot" style="background:${tm.color}"></div>
           <span style="flex:1;font-weight:700">${tm.name}</span>
           <span>${lv.emoji}</span>
           <span style="font-size:.7rem;color:var(--muted)">${tm.acertos} ✓</span>
-          ${members.length?`<span style="font-size:.65rem;color:var(--muted);margin-left:2px">▾</span>`:''}
         </div>
         ${membersHtml}
       </div>`;
   }).join('');
-}
-
-function toggleMembers(teamId){
-  const el=document.getElementById(`members_${teamId}`);
-  if(!el)return;
-  const open=el.style.display==='block';
-  el.style.display=open?'none':'block';
-  // Flip arrow
-  const row=el.closest('.turn-row');
-  if(row){
-    const arrow=row.querySelector('span:last-child');
-    if(arrow&&(arrow.textContent==='▾'||arrow.textContent==='▴'))
-      arrow.textContent=open?'▾':'▴';
-  }
 }
 
 // ══════════════════════════════════════════════════════
