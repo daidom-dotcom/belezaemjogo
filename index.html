@@ -225,8 +225,8 @@ textarea{resize:vertical;min-height:60px;}
 /* RIGHT — order + undiscovered */
 .right-panel{display:flex;flex-direction:column;gap:10px;align-self:stretch;}
 .right-panel .panel-card{flex:1;display:flex;flex-direction:column;}
-.turn-members{margin-top:4px;padding-top:6px;border-top:1px solid var(--line);}
-.turn-members div{font-size:.72rem;color:var(--muted);padding:2px 0;}
+.turn-members{margin-top:5px;padding-top:5px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:1px 4px;}
+.turn-members div{font-size:.68rem;color:var(--muted);padding:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .turn-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;font-size:.78rem;font-weight:600;margin-bottom:3px;transition:background .15s;}
 .turn-row.cur{background:var(--orange-xl);}
 .turn-row:hover{background:#f5f5f5;}
@@ -835,7 +835,9 @@ function answerQ(chosen){
     const evolved=lvAfter.name!==lvBefore.name;
     const msg=evolved
       ? `🎉 ${team.name} vendeu mais um produto e virou ${lvAfter.name}! ${lvAfter.emoji}`
-      : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji} (${gs_team?.acertos} vendido${gs_team?.acertos!==1?'s':''})`;
+      : gs_team?.acertos===1
+        ? `${team.name} fechou o primeiro pedido! 🌱`
+        : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji}`;
     r.textContent=msg;
     r.className='q-result ok';
     refreshCell(mState.cellNum);
