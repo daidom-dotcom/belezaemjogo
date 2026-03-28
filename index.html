@@ -196,7 +196,16 @@ textarea{resize:vertical;min-height:60px;}
   background:rgba(255,255,255,.85);
   z-index:2;
 }
-.cell.start{
+.cell.solved:hover{
+  transform:translateY(-2px) scale(1.03);
+  background:unset;
+}
+/* solved cells: remove glass effect so bg-image shows through */
+.cell.solved{
+  color:#fff;border-color:transparent;overflow:hidden;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  background:unset;
+}
   background:rgba(28,28,28,.85);
   border-color:rgba(28,28,28,.3);
   box-shadow:0 2px 8px rgba(0,0,0,.2);
@@ -215,21 +224,13 @@ textarea{resize:vertical;min-height:60px;}
   transform:translateY(-3px) scale(1.06);
   z-index:3;
 }
-/* solved = team color with glow */
-.cell.solved{
-  color:#fff;
-  border-color:transparent;
-  box-shadow:0 4px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);
-}
-.cell.solved:hover{
-  transform:translateY(-2px) scale(1.03);
-  box-shadow:0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.3);
-}
+/* solved = team product image */
+
 /* Numbers */
 .cell-num{font-size:clamp(.9rem,2vw,1.4rem);font-weight:800;color:rgba(180,120,80,.7);line-height:1;}
 .cell.open .cell-num{color:rgba(180,120,80,.7);}
 .cell.active-q .cell-num{color:var(--orange);}
-.cell.solved .cell-num{color:rgba(255,255,255,.95);text-shadow:0 1px 4px rgba(0,0,0,.25);}
+
 .cell.start .cell-num{color:rgba(255,255,255,.8);font-size:.75rem;}
 .cell-icon{font-size:clamp(.7rem,1.6vw,1.1rem);line-height:1;}
 .cell-answer{
@@ -751,23 +752,19 @@ function applySolvedCell(el, cell, cellNum){
   const teamName=cell.solvedByTeam?.name||'';
   const img=TEAM_IMG_MAP[teamName];
   const isLight=LIGHT_BG_TEAMS.includes(teamName);
-  if(img){
-    el.style.backgroundImage=`url(${img})`;
-    el.style.backgroundSize='cover';
-    el.style.backgroundPosition='center';
-    el.style.background='';
-  } else {
-    el.style.background=cell.solvedByTeam?.color||'#888';
-    el.style.backgroundImage='';
-  }
   const textColor=isLight?'rgba(20,20,20,.95)':'rgba(255,255,255,.97)';
-  const shadow=isLight?'0 1px 2px rgba(255,255,255,.5),0 0 6px rgba(255,255,255,.4)':'0 1px 4px rgba(0,0,0,.6)';
-  const overlayColor=isLight?'rgba(255,255,255,.18)':'rgba(0,0,0,.32)';
+  const shadow=isLight?'0 1px 2px rgba(255,255,255,.6)':'0 1px 4px rgba(0,0,0,.65)';
+  const overlayColor=isLight?'rgba(255,255,255,.2)':'rgba(0,0,0,.32)';
   const answerLine=cell.answerText
-    ?`<div class="cell-answer" style="color:${textColor};text-shadow:${shadow};position:relative;z-index:1">${escHtml(cell.answerText)}</div>`:'';
+    ?`<div style="font-size:clamp(.42rem,.95vw,.68rem);font-weight:700;color:${textColor};text-shadow:${shadow};position:relative;z-index:1;line-height:1.2;margin-top:2px;word-break:break-word;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${escHtml(cell.answerText)}</div>`:''  ;
+  // Use setAttribute style to override ALL CSS class backgrounds
+  const bgStr=img
+    ?`border-color:transparent;overflow:hidden;backdrop-filter:none;-webkit-backdrop-filter:none;background:none!important;background-image:url(${img})!important;background-size:cover!important;background-position:center!important;`
+    :`border-color:transparent;overflow:hidden;background:${cell.solvedByTeam?.color||'#888'}!important;`;
+  el.setAttribute('style', bgStr);
   el.innerHTML=`
-    <div style="position:absolute;inset:0;background:${overlayColor};border-radius:inherit;pointer-events:none"></div>
-    <div class="cell-num" style="color:${textColor};text-shadow:${shadow};position:relative;z-index:1">${cellNum}</div>
+    <div style="position:absolute;inset:0;background:${overlayColor};border-radius:inherit;pointer-events:none;z-index:0"></div>
+    <div style="color:${textColor};text-shadow:${shadow};position:relative;z-index:1;font-size:clamp(.9rem,2vw,1.4rem);font-weight:800;line-height:1">${cellNum}</div>
     ${answerLine}`;
 }
 function renderBoard(){
