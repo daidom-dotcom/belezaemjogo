@@ -299,13 +299,19 @@ textarea{resize:vertical;min-height:60px;}
 @keyframes tout{from{opacity:1}to{opacity:0}}
 
 @media(max-width:900px){
-  .game-body{grid-template-columns:1fr 240px;grid-template-rows:auto auto;}
-  .right-panel{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;overflow-y:visible;}
+  .game-body{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+    display:flex;
+    flex-direction:column;
+  }
+  .left-col{order:1;}
+  #questionPanel{order:2;}
+  .right-panel{order:3;flex-direction:row;flex-wrap:wrap;}
   .right-panel .panel-card{flex:1 1 180px;}
 }
 @media(max-width:600px){
-  .game-body{grid-template-columns:1fr;grid-template-rows:auto;}
-  .mid-panel,.right-panel{grid-column:1;}
+  .game-body{flex-direction:column;}
 }
 </style>
 </head>
