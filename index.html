@@ -628,8 +628,10 @@ function addQuestion(data){
       <span class="q-block-num">${tr('qBlockLabel',n)}</span>
       <button class="btn sm" style="background:var(--red-err)" onclick="rmQ(${n})">✕</button>
     </div>
-    <label>${tr('labelEnunc')}</label>
-    <textarea id="qt_${n}" placeholder="${tr('placeholderQ')}">${data?.[LANG]||data?.pt||''}</textarea>
+    <label>🇧🇷 Enunciado (PT)</label>
+    <textarea id="qt_${n}_pt" placeholder="Escreva a pergunta em português...">${data?.pt||data?.q||''}</textarea>
+    <label>🇪🇸 Enunciado (ES)</label>
+    <textarea id="qt_${n}_es" placeholder="Escribe la pregunta en español...">${data?.es||''}</textarea>
     <label style="margin-bottom:6px">${tr('labelOpts')}</label>
     <div class="opts-grid">
       ${LETTERS.map((l,li)=>`
@@ -662,12 +664,12 @@ function fillSampleQuestions(){
 function collectQ(){
   return Array.from(document.querySelectorAll('.q-block')).map(b=>{
     const n=b.id.split('_')[1];
-    const text=document.getElementById(`qt_${n}`).value.trim();
+    const pt=(document.getElementById(`qt_${n}_pt`)?.value||document.getElementById(`qt_${n}`)?.value||'').trim();
+    const es=(document.getElementById(`qt_${n}_es`)?.value||'').trim()||pt;
     const opts={};LETTERS.forEach(l=>{opts[l]=document.getElementById(`qo_${n}_${l}`)?.value?.trim()||'';});
     const correct=document.getElementById(`qc_${n}`).value;
-    const srcQ=questions[parseInt(n)-1];
-    return{pt:srcQ?.pt||text, es:srcQ?.es||text, text, opts, correct};
-  }).filter(q=>q.text);
+    return{pt, es, text:pt, opts, correct};
+  }).filter(q=>q.pt||q.es);
 }
 function rerenderQBlocks(){
   document.querySelectorAll('.q-block').forEach(block=>{
@@ -675,11 +677,8 @@ function rerenderQBlocks(){
     const numEl=block.querySelector('.q-block-num');
     if(numEl)numEl.textContent=tr('qBlockLabel',n);
     const labels=block.querySelectorAll('label');
-    if(labels[0])labels[0].textContent=tr('labelEnunc');
-    if(labels[1])labels[1].textContent=tr('labelOpts');
-    if(labels[2])labels[2].textContent=tr('labelGab');
-    const ta=block.querySelector('textarea');
-    if(ta){ta.placeholder=tr('placeholderQ');const srcQ=questions[parseInt(n)-1];if(srcQ)ta.value=srcQ[LANG]||srcQ.pt||ta.value;}
+    if(labels[2])labels[2].textContent=tr('labelOpts');
+    if(labels[3])labels[3].textContent=tr('labelGab');
     LETTERS.forEach(l=>{const inp=document.getElementById(`qo_${n}_${l}`);if(inp)inp.placeholder=`${LANG==='pt'?'Opção':'Opción'} ${l}`;});
   });
 }
