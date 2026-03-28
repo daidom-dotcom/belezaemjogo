@@ -466,6 +466,11 @@ function setLang(lang){
   applyStaticLang();
   if(gameState){renderTopbarRanking();renderTurnOrder();renderBoard();}
   rerenderQBlocks();
+  // Retranslate open question if visible
+  if(mState.cellNum && document.getElementById('questionPanel')?.style.visibility==='visible'){
+    const q=questions[mState.cellNum-1];
+    if(q) document.getElementById('qText').textContent=q[LANG]||q.pt||q.text||'';
+  }
 }
 function applyStaticLang(){
   const s=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html;};
