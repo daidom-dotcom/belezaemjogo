@@ -891,7 +891,7 @@ function answerQ(chosen){
   } else {
     const gs_team=gameState.teams.find(t=>t.id===team.id);
     const lv=getLevel(gs_team?gs_team.acertos:0);
-    r.textContent=`${team.name} não vendeu e não evoluiu no plano de crescimento. ${lv.emoji}`;
+    r.textContent=`${team.name} não vendeu neste ciclo e não evoluiu no Plano de Crescimento. ${lv.emoji}`;
     r.className='q-result no';
     // Remove active-q highlight from cell immediately
     gameState.picked=null;
