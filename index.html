@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💄 Beleza em Jogo</title>
+<title>Beleza em Jogo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -497,16 +497,16 @@ const BOARD_SIZE = 24; // 24 question houses
 const COLS = 6; // 6 columns → 4 rows of 6
 
 const LEVELS = [
-  {min:0, emoji:'🌱', name:'Semente'},
-  {min:2, emoji:'🥉', name:'Bronze'},
-  {min:3, emoji:'🥈', name:'Prata'},
-  {min:4, emoji:'🥇', name:'Ouro'},
-  {min:5, emoji:'💎', name:'Diamante'},
+  {min:0, emoji:'🌱', name:'Semente',  nameEs:'Semilla'},
+  {min:2, emoji:'🥉', name:'Bronze',   nameEs:'Bronce'},
+  {min:3, emoji:'🥈', name:'Prata',    nameEs:'Plata'},
+  {min:4, emoji:'🥇', name:'Ouro',     nameEs:'Oro'},
+  {min:5, emoji:'💎', name:'Diamante', nameEs:'Diamante'},
 ];
 function getLevel(acertos){
   let lv=LEVELS[0];
   for(const l of LEVELS) if(acertos>=l.min) lv=l;
-  return lv;
+  return{...lv, displayName: LANG==='es' ? lv.nameEs : lv.name};
 }
 
 const FIXED_TEAMS = [
@@ -883,10 +883,16 @@ function answerQ(chosen){
     // Personalized message
     const evolved=lvAfter.name!==lvBefore.name;
     const msg=evolved
-      ? `🎉 ${team.name} vendeu mais um produto e virou ${lvAfter.name}! ${lvAfter.emoji}`
+      ? LANG==='es'
+        ? `🎉 ${team.name} vendió un producto más y se convirtió en ${lvAfter.displayName}! ${lvAfter.emoji}`
+        : `🎉 ${team.name} vendeu mais um produto e virou ${lvAfter.displayName}! ${lvAfter.emoji}`
       : gs_team?.acertos===1
-        ? `${team.name} fechou o primeiro pedido! 🌱`
-        : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji}`;
+        ? LANG==='es'
+          ? `${team.name} cerró su primer pedido! 🌱`
+          : `${team.name} fechou o primeiro pedido! 🌱`
+        : LANG==='es'
+          ? `✓ ${team.name} vendió un producto más! ${lvAfter.emoji}`
+          : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji}`;
     r.textContent=msg;
     r.className='q-result ok';
     refreshCell(mState.cellNum);
@@ -895,7 +901,9 @@ function answerQ(chosen){
   } else {
     const gs_team=gameState.teams.find(t=>t.id===team.id);
     const lv=getLevel(gs_team?gs_team.acertos:0);
-    r.textContent=`${team.name} não vendeu neste ciclo e não evoluiu no Plano de Crescimento. ${lv.emoji}`;
+    r.textContent=LANG==='es'
+      ? `${team.name} no vendió en este ciclo y no evolucionó en el Plan de Crecimiento. ${lv.emoji}`
+      : `${team.name} não vendeu neste ciclo e não evoluiu no Plano de Crescimento. ${lv.emoji}`;
     r.className='q-result no';
     // Remove active-q highlight from cell immediately
     gameState.picked=null;
