@@ -470,6 +470,7 @@ function setLang(lang){
   if(mState.cellNum && document.getElementById('questionPanel')?.style.visibility==='visible'){
     const q=questions[mState.cellNum-1];
     if(q) document.getElementById('qText').textContent=q[LANG]||q.pt||q.text||'';
+    renderResultMsg();
   }
 }
 function applyStaticLang(){
@@ -880,20 +881,10 @@ function answerQ(chosen){
       gs_team.acertoOrder=gameState.totalAcertos=(gameState.totalAcertos||0)+1;
     }
     const lvAfter=getLevel(gs_team?gs_team.acertos:0);
-    // Personalized message
     const evolved=lvAfter.name!==lvBefore.name;
-    const msg=evolved
-      ? LANG==='es'
-        ? `🎉 ${team.name} vendió un producto más y se convirtió en ${lvAfter.displayName}! ${lvAfter.emoji}`
-        : `🎉 ${team.name} vendeu mais um produto e virou ${lvAfter.displayName}! ${lvAfter.emoji}`
-      : gs_team?.acertos===1
-        ? LANG==='es'
-          ? `${team.name} cerró su primer pedido! 🌱`
-          : `${team.name} fechou o primeiro pedido! 🌱`
-        : LANG==='es'
-          ? `✓ ${team.name} vendió un producto más! ${lvAfter.emoji}`
-          : `✓ ${team.name} vendeu mais um produto! ${lvAfter.emoji}`;
-    r.textContent=msg;
+    mState.resultType='ok';
+    mState.resultData={teamName:team.name, evolved, lvAfter, isFirst:gs_team?.acertos===1};
+    renderResultMsg();
     r.className='q-result ok';
     refreshCell(mState.cellNum);
     renderTopbarRanking();
@@ -901,9 +892,9 @@ function answerQ(chosen){
   } else {
     const gs_team=gameState.teams.find(t=>t.id===team.id);
     const lv=getLevel(gs_team?gs_team.acertos:0);
-    r.textContent=LANG==='es'
-      ? `${team.name} no vendió en este ciclo y no evolucionó en el Plan de Crecimiento. ${lv.emoji}`
-      : `${team.name} não vendeu neste ciclo e não evoluiu no Plano de Crescimento. ${lv.emoji}`;
+    mState.resultType='no';
+    mState.resultData={teamName:team.name, lv};
+    renderResultMsg();
     r.className='q-result no';
     // Remove active-q highlight from cell immediately
     gameState.picked=null;
@@ -914,8 +905,41 @@ function answerQ(chosen){
     <button class="btn confirm sm" style="width:100%" onclick="continueGame()">${tr('continueBtn')}</button>`;
 }
 
+function renderResultMsg(){
+  if(!mState.resultType) return;
+  const r=document.getElementById('qResult');
+  if(!r) return;
+  const d=mState.resultData;
+  let msg='';
+  if(mState.resultType==='ok'){
+    const {teamName,evolved,lvAfter,isFirst}=d;
+    // Re-fetch level with current LANG for displayName
+    const lv=getLevel(gameState.teams.find(t=>t.name===teamName)?.acertos||0);
+    if(evolved){
+      msg=LANG==='es'
+        ? `❤️ ${teamName} vendió un producto más y se convirtió en ${lv.displayName}! ${lv.emoji}`
+        : `❤️ ${teamName} vendeu mais um produto e virou ${lv.displayName}! ${lv.emoji}`;
+    } else if(isFirst){
+      msg=LANG==='es'
+        ? `❤️ ${teamName} cerró su primer pedido!`
+        : `❤️ ${teamName} fechou o primeiro pedido!`;
+    } else {
+      msg=LANG==='es'
+        ? `❤️ ${teamName} vendió un producto más!`
+        : `❤️ ${teamName} vendeu mais um produto!`;
+    }
+  } else {
+    const {teamName}=d;
+    msg=LANG==='es'
+      ? `💔 ${teamName} no vendió en este ciclo y no evolucionó en el Plan de Crecimiento.`
+      : `💔 ${teamName} não vendeu neste ciclo e não evoluiu no Plano de Crescimento.`;
+  }
+  r.textContent=msg;
+}
+
 function continueGame(){
   document.getElementById('questionPanel').style.visibility='hidden';
+  mState={};
 
   // Check if all 24 houses solved
   const allSolved=gameState.cells.every(c=>c.solved);
